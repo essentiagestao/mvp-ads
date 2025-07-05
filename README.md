@@ -18,3 +18,13 @@ Plataforma de Ads
    ```bash
    npm run dev
    ```
+
+4. Para gerar uma versão de produção:
+   ```bash
+   npm run build
+   ```
+
+5. Para visualizar o build gerado:
+   ```bash
+   npm run preview
+   ```

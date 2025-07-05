@@ -1,5 +1,5 @@
 import React from 'react';
-import { IUploadQueueItem } from '../../mediaQueue';
+import { IUploadQueueItem } from './mediaQueue';
 
 interface Props {
   item: IUploadQueueItem;

@@ -8,7 +8,7 @@ import {
   processUploadQueue,
   enqueueMediaUpload,
   IUploadQueueItem
-} from '../mediaQueue';
+} from './mediaQueue';
 
 /**
  * UploadQueue

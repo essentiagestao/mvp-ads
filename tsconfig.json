@@ -10,6 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "MediaLibraryWithUpload.tsx", "mediaQueue.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { liveQuery } from 'dexie';
 import { toast } from 'react-toastify';
 import { db, IUploadQueueItem } from './mediaQueue';
-import UploadModal from './src/components/UploadModal';
-import MediaItem from './src/components/MediaItem';
+import UploadModal from './UploadModal';
+import MediaItem from './MediaItem';
 
 type Filter = 'all' | 'image' | 'video';
 
