@@ -118,9 +118,205 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// --- FUNÇÕES AUXILIARES PARA UPLOAD --- //
 
+// --- FUNÇÕES AUXILIARES PARA UPLOAD --- //
 async function uploadImageToMeta(name: string, buffer: ArrayBuffer) {
   const blob = new Blob([buffer]);
   const form = new FormData();
   form.append('access_token', ACCESS_TOKEN);
+  form.append('name', name);
+  form.append('source', blob);
+  const res = await fetch(`${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/adimages`, {
+    method: 'POST',
+    body: form
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || 'Erro ao enviar imagem');
+  }
+  return data;
+}
+
+async function uploadVideoToMeta(
+  name: string,
+  fileSize: number,
+  buffer: ArrayBuffer
+) {
+  const startRes = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/advideos`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        upload_phase: 'start',
+        access_token: ACCESS_TOKEN,
+        file_size: fileSize
+      })
+    }
+  );
+  const start = await startRes.json();
+  if (!startRes.ok || start.error) {
+    throw new Error(start.error?.message || 'Falha ao iniciar upload de vídeo');
+  }
+
+  const uploadUrl = start.upload_url as string;
+  const sessionId = start.upload_session_id as string;
+
+  const transferRes = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    body: buffer
+  });
+  if (!transferRes.ok) {
+    throw new Error('Falha ao transferir vídeo');
+  }
+
+  const finishRes = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/advideos`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        upload_phase: 'finish',
+        access_token: ACCESS_TOKEN,
+        upload_session_id: sessionId,
+        name
+      })
+    }
+  );
+  const finish = await finishRes.json();
+  if (!finishRes.ok || finish.error) {
+    throw new Error(finish.error?.message || 'Falha ao finalizar upload');
+  }
+  return finish;
+}
+
+// --- OUTRAS FUNÇÕES UTILIZADAS PELAS TELAS --- //
+export interface IBudgetItem {
+  id: string;
+  name: string;
+  currentBudget: number;
+}
+
+export async function fetchBudgetItems(): Promise<IBudgetItem[]> {
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/campaigns?fields=name,daily_budget&access_token=${ACCESS_TOKEN}`
+  );
+  const json = await res.json();
+  if (!res.ok || json.error) {
+    throw new Error(json.error?.message || 'Erro ao buscar orçamentos');
+  }
+  return (json.data || []).map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    currentBudget: parseFloat(c.daily_budget) / 100
+  }));
+}
+
+export async function updateBudget(id: string, value: number): Promise<void> {
+  const form = new URLSearchParams();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('daily_budget', String(Math.round(value * 100)));
+  const res = await fetch(`${META_GRAPH_API_URL}/${id}`, {
+    method: 'POST',
+    body: form
+  });
+  const json = await res.json();
+  if (!res.ok || json.error) {
+    throw new Error(json.error?.message || 'Erro ao atualizar orçamento');
+  }
+}
+
+export async function createCampaign(
+  name: string,
+  objective: string
+): Promise<string> {
+  const form = new URLSearchParams();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('name', name);
+  form.append('objective', objective);
+  const res = await fetch(`${META_GRAPH_API_URL}/act_${AD_ACCOUNT_ID}/campaigns`, {
+    method: 'POST',
+    body: form
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || 'Erro ao criar campanha');
+  }
+  return data.id as string;
+}
+
+export async function createAdSet(
+  campaignId: string,
+  audienceId: string,
+  budget: { type: string; value: number }
+): Promise<string> {
+  const form = new URLSearchParams();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('campaign_id', campaignId);
+  form.append('targeting', JSON.stringify({ custom_audiences: [{ id: audienceId }] }));
+  if (budget.type === 'DAILY') {
+    form.append('daily_budget', String(Math.round(budget.value * 100)));
+  } else {
+    form.append('lifetime_budget', String(Math.round(budget.value * 100)));
+  }
+  const res = await fetch(`${META_GRAPH_API_URL}/act_${AD_ACCOUNT_ID}/adsets`, {
+    method: 'POST',
+    body: form
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || 'Erro ao criar conjunto');
+  }
+  return data.id as string;
+}
+
+export async function createAd(
+  adSetId: string,
+  message: string,
+  files: File[]
+): Promise<string> {
+  const imageIds: string[] = [];
+  for (const file of files) {
+    const buffer = await file.arrayBuffer();
+    const res = await uploadImageToMeta(file.name, buffer);
+    imageIds.push(res.hash || res.id);
+  }
+  const form = new URLSearchParams();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('adset_id', adSetId);
+  if (imageIds.length > 0) {
+    form.append('creative', JSON.stringify({ image_hash: imageIds[0] }));
+  }
+  form.append('name', message);
+  const res = await fetch(`${META_GRAPH_API_URL}/act_${AD_ACCOUNT_ID}/ads`, {
+    method: 'POST',
+    body: form
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || 'Erro ao criar anúncio');
+  }
+  return data.id as string;
+}
+
+export async function getInsights(
+  level: string,
+  since: string,
+  until: string
+) {
+  const params = new URLSearchParams({
+    access_token: ACCESS_TOKEN,
+    level,
+    time_range: JSON.stringify({ since, until }),
+    fields: 'date_start,spend,clicks,actions'
+  });
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/insights?${params.toString()}`
+  );
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || 'Erro ao obter insights');
+  }
+  return data.data as any[];
+}

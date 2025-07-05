@@ -127,4 +127,36 @@ const Reports: React.FC = () => {
           </select>
         </label>
         <button onClick={fetchAndProcessData} disabled={loading}>
-          {loading ? 'Carregando...' : 'Atualiza
+          {loading ? 'Carregando...' : 'Atualizar'}
+        </button>
+      </div>
+
+      <div className="table-wrapper">
+        {data.length ? (
+          <table>
+            <thead>
+              <tr>
+                {columns.map(c => (
+                  <th key={c.key}>{c.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, i) => (
+                <tr key={i}>
+                  {columns.map(c => (
+                    <td key={c.key}>{row[c.key]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Nenhum dado disponível.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Reports;
