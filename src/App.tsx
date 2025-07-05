@@ -1,5 +1,5 @@
 import React from 'react';
-import MediaLibraryWithUpload from '../MediaLibraryWithUpload';
+import MediaLibraryWithUpload from './components/MediaLibraryWithUpload';
 import UploadQueue from './components/UploadQueue';
 import BudgetEditor from './components/BudgetEditor';
 import CampaignEditor from './components/CampaignEditor';

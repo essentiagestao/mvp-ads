@@ -9,7 +9,7 @@ import {
   createCampaign,
   createAdSet,
   createAd
-} from '../mediaQueue'; // ajuste o caminho conforme sua estrutura
+} from './mediaQueue';
 
 // Tipos
 type CampaignObjective = 'LINK_CLICKS' | 'CONVERSIONS' | 'AWARENESS';
