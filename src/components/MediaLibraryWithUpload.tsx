@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { liveQuery } from 'dexie';
 import { toast } from 'react-toastify';
-import { db, IUploadQueueItem, enqueueMediaUpload } from '../mediaQueue';
+import { db, IUploadQueueItem, enqueueMediaUpload } from './mediaQueue';
 
 type Filter = 'all' | 'image' | 'video';
 

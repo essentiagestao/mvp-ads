@@ -6,7 +6,7 @@ import {
   fetchBudgetItems,
   updateBudget,
   IBudgetItem
-} from '../mediaQueue'; // ajuste o caminho conforme sua estrutura
+} from './mediaQueue';
 
 // Extende o item vindo da API para manter o novo valor editável
 interface EditableBudgetItem extends IBudgetItem {
