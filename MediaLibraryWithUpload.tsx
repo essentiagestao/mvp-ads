@@ -1,9 +1,9 @@
-import React, {
-  useState, useEffect, useMemo, useCallback, DragEvent
-} from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { liveQuery } from 'dexie';
 import { toast } from 'react-toastify';
-import { db, IUploadQueueItem, enqueueMediaUpload } from '../mediaQueue';
+import { db, IUploadQueueItem } from './mediaQueue';
+import UploadModal from './src/components/UploadModal';
+import MediaItem from './src/components/MediaItem';
 
 type Filter = 'all' | 'image' | 'video';
 
@@ -73,7 +73,5 @@ const MediaLibraryWithUpload: React.FC = () => {
   );
 };
 
-// ... inclua aqui os subcomponentes MediaItem e UploadModal
-// mas sem mocks, apenas consumindo enqueueMediaUpload e db
 
 export default MediaLibraryWithUpload;
