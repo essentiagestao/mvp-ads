@@ -18,3 +18,6 @@ Plataforma de Ads
    ```bash
    npm run dev
    ```
+
+O projeto utiliza a pasta `src` como raiz do Vite. Certifique-se de que o arquivo
+`index.html` permanece dentro de `src`.
