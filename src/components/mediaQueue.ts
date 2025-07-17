@@ -35,12 +35,12 @@ const db = new AppDB();
 
 // --- VARIÁVEIS DE AMBIENTE --- //
 
-const AD_ACCOUNT_ID = process.env.REACT_APP_AD_ACCOUNT_ID!;
-const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN!;
+const AD_ACCOUNT_ID = import.meta.env.VITE_AD_ACCOUNT_ID!;
+const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN!;
 const META_GRAPH_API_URL = 'https://graph.facebook.com/v23.0';
 
 if (!AD_ACCOUNT_ID || !ACCESS_TOKEN) {
-  console.error('Faltam variáveis de ambiente REACT_APP_AD_ACCOUNT_ID ou REACT_APP_ACCESS_TOKEN');
+  console.error('Faltam variáveis de ambiente VITE_AD_ACCOUNT_ID ou VITE_ACCESS_TOKEN');
 }
 
 // --- FUNÇÕES PRINCIPAIS --- //
