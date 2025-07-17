@@ -1,9 +1,12 @@
 import React, {
-  useState, useEffect, useMemo, useCallback, DragEvent
+  useState,
+  useEffect,
+  useMemo,
+  useCallback
 } from 'react';
 import { liveQuery } from 'dexie';
 import { toast } from 'react-toastify';
-import { db, IUploadQueueItem, enqueueMediaUpload } from './mediaQueue';
+import { db, IUploadQueueItem } from './mediaQueue';
 
 type Filter = 'all' | 'image' | 'video';
 
