@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 // --- INTERFACES E TIPOS --- //
 
 type MediaType = 'image' | 'video';
-type UploadStatus = 'pending' | 'uploading';
+type UploadStatus = 'pending' | 'uploading' | 'failed';
 
 export interface IUploadQueueItem {
   id?: number;
@@ -103,7 +103,7 @@ export async function processUploadQueue(): Promise<void> {
 
     } catch (err: any) {
       console.error(`Erro no upload de ${name}:`, err);
-      await db.uploadQueue.update(id, { status: 'pending' });
+      await db.uploadQueue.update(id, { status: 'failed' });
       toast.error(`Falha no upload de "${name}", será tentado novamente`);
     }
   }
