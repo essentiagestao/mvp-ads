@@ -6,8 +6,15 @@ interface Props {
 }
 
 const MediaItem: React.FC<Props> = ({ item }) => {
-  const url = React.useMemo(() => {
-    return URL.createObjectURL(new Blob([item.file]));
+  const [url, setUrl] = React.useState('');
+
+  React.useEffect(() => {
+    const objectUrl = URL.createObjectURL(new Blob([item.file]));
+    setUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
   }, [item.file]);
 
   return (
