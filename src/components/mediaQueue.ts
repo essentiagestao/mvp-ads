@@ -124,3 +124,171 @@ async function uploadImageToMeta(name: string, buffer: ArrayBuffer) {
   const blob = new Blob([buffer]);
   const form = new FormData();
   form.append('access_token', ACCESS_TOKEN);
+  form.append('name', name);
+  form.append('bytes', blob);
+
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/adimages`,
+    { method: 'POST', body: form }
+  );
+
+  if (!res.ok) {
+    throw new Error('Falha ao enviar imagem para a Meta');
+  }
+
+  return res.json();
+}
+
+async function uploadVideoToMeta(
+  name: string,
+  _size: number,
+  buffer: ArrayBuffer
+) {
+  const blob = new Blob([buffer]);
+  const form = new FormData();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('name', name);
+  form.append('source', blob);
+
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/advideos`,
+    { method: 'POST', body: form }
+  );
+
+  if (!res.ok) {
+    throw new Error('Falha ao enviar vídeo para a Meta');
+  }
+
+  return res.json();
+}
+
+// --- TIPOS E FUNÇÕES DA API --- //
+
+export interface IBudgetItem {
+  id: string;
+  name: string;
+  currentBudget: number;
+}
+
+export async function fetchBudgetItems(): Promise<IBudgetItem[]> {
+  const url =
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/adsets` +
+    `?fields=id,name,daily_budget,lifetime_budget&access_token=${ACCESS_TOKEN}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Erro ao buscar orçamentos');
+  }
+  const data = await res.json();
+  return (data.data || []).map((i: any) => ({
+    id: i.id,
+    name: i.name,
+    currentBudget: Number(i.daily_budget || i.lifetime_budget || 0),
+  }));
+}
+
+export async function updateBudget(
+  id: string,
+  value: number
+): Promise<void> {
+  const body = new URLSearchParams();
+  body.append('access_token', ACCESS_TOKEN);
+  body.append('daily_budget', value.toString());
+  const res = await fetch(`${META_GRAPH_API_URL}/${id}`, {
+    method: 'POST',
+    body,
+  });
+  if (!res.ok) {
+    throw new Error('Erro ao atualizar orçamento');
+  }
+}
+
+export async function createCampaign(
+  name: string,
+  objective: string
+): Promise<string> {
+  const body = new URLSearchParams();
+  body.append('access_token', ACCESS_TOKEN);
+  body.append('name', name);
+  body.append('objective', objective);
+  body.append('status', 'PAUSED');
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/campaigns`,
+    { method: 'POST', body }
+  );
+  if (!res.ok) {
+    throw new Error('Erro ao criar campanha');
+  }
+  const json = await res.json();
+  return json.id;
+}
+
+export async function createAdSet(
+  campaignId: string,
+  audienceId: string,
+  budget: { type: 'DAILY' | 'LIFETIME'; value: number }
+): Promise<string> {
+  const body = new URLSearchParams();
+  body.append('access_token', ACCESS_TOKEN);
+  body.append('campaign_id', campaignId);
+  if (budget.type === 'DAILY') {
+    body.append('daily_budget', budget.value.toString());
+  } else {
+    body.append('lifetime_budget', budget.value.toString());
+  }
+  body.append(
+    'targeting',
+    JSON.stringify({ custom_audiences: [{ id: audienceId }] })
+  );
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/adsets`,
+    { method: 'POST', body }
+  );
+  if (!res.ok) {
+    throw new Error('Erro ao criar conjunto de anúncios');
+  }
+  const json = await res.json();
+  return json.id;
+}
+
+export async function createAd(
+  adSetId: string,
+  message: string,
+  files: File[]
+): Promise<string> {
+  const form = new FormData();
+  form.append('access_token', ACCESS_TOKEN);
+  form.append('adset_id', adSetId);
+  form.append('name', 'Anuncio');
+  form.append('message', message);
+  if (files.length) {
+    form.append('source', files[0]);
+  }
+  const res = await fetch(
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/ads`,
+    { method: 'POST', body: form }
+  );
+  if (!res.ok) {
+    throw new Error('Erro ao criar anúncio');
+  }
+  const json = await res.json();
+  return json.id;
+}
+
+export async function getInsights(
+  level: string,
+  since: string,
+  until: string
+): Promise<any[]> {
+  const url =
+    `${META_GRAPH_API_URL}/${AD_ACCOUNT_ID}/insights` +
+    `?level=${level}&time_range[since]=${since}&time_range[until]=${until}` +
+    `&fields=spend,clicks,actions&access_token=${ACCESS_TOKEN}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('Erro ao obter insights');
+  }
+  const json = await res.json();
+  return json.data || [];
+}
+
+export { db };
