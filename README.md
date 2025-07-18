@@ -24,9 +24,19 @@ Plataforma de Ads
    npm run test
    ```
 
+5. Gere a versão de produção:
+   ```bash
+   npm run build
+   ```
+
 O projeto utiliza o Vite com `public/index.html` como ponto de entrada.
 Os módulos que interagem com a API da Meta foram movidos para `backend-meta/` e
 são simulados no ambiente do Codex por `src/mocks/handlers.ts`.
 
 As variáveis de ambiente declaradas em `.env.local` ficam disponíveis no código
 através de `import.meta.env`.
+
+## Variáveis de ambiente
+
+- `VITE_AD_ACCOUNT_ID`: ID da conta de anúncios.
+- `VITE_ACCESS_TOKEN`: token de acesso da Meta API.
