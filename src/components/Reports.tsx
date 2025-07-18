@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { getInsights } from './mediaQueue';
+import { getInsights } from '../__legacy/mediaQueue-exports';
 
 type InsightLevel = 'account' | 'campaign' | 'adset' | 'ad';
 

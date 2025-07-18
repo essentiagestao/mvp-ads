@@ -9,7 +9,7 @@ import {
   createCampaign,
   createAdSet,
   createAd
-} from './mediaQueue';
+} from '../__legacy/mediaQueue-exports';
 
 // Tipos
 type CampaignObjective = 'LINK_CLICKS' | 'CONVERSIONS' | 'AWARENESS';

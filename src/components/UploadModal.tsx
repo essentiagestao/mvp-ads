@@ -7,7 +7,7 @@ import React, {
   KeyboardEvent,
   useEffect
 } from 'react';
-import { enqueueMediaUpload } from './mediaQueue';
+import { enqueueMediaUpload } from '../__legacy/mediaQueue-exports';
 import { toast } from 'react-toastify';
 
 interface UploadModalProps {
