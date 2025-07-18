@@ -19,6 +19,11 @@ Plataforma de Ads
    npm run dev
    ```
 
+4. Execute os testes automatizados:
+   ```bash
+   npm run test
+   ```
+
 O projeto utiliza o Vite com `public/index.html` como ponto de entrada.
 Os módulos que interagem com a API da Meta foram movidos para `backend-meta/` e
 são simulados no ambiente do Codex por `src/mocks/handlers.ts`.
