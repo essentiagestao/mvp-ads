@@ -1,5 +1,5 @@
 import React from 'react';
-import CampaignWizard from '../components/Campaign/CampaignWizard.jsx';
+import CampaignWizard from '../components/Campaign/CampaignWizard';
 
 export default function CriarCampanha() {
   return (
