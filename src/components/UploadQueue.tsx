@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import {
   db,
   processUploadQueue,
-  enqueueMediaUpload,
   IUploadQueueItem
 } from './mediaQueue';
 
