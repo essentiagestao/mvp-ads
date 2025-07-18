@@ -187,10 +187,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
 
 export default UploadModal;
 
-/* 
-Adicione ao CSS global:
-
-.modal-backdrop { /* ... igual antes ... */ }
-.modal-content { /* ... */ }
-/* etc */
-*/
+// Adicione ao CSS global:
+//
+// .modal-backdrop { /* ... igual antes ... */ }
+// .modal-content { /* ... */ }
+// etc
