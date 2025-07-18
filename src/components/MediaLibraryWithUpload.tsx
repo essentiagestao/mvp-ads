@@ -7,6 +7,8 @@ import React, {
 import { liveQuery } from 'dexie';
 import { toast } from 'react-toastify';
 import { db, IUploadQueueItem } from './mediaQueue';
+import MediaItem from './MediaItem';
+import UploadModal from './UploadModal';
 
 type Filter = 'all' | 'image' | 'video';
 
