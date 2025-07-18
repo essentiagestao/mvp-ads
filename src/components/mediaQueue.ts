@@ -21,13 +21,33 @@ export interface IUploadQueueItem {
 
 // --- CONFIGURAÇÃO DO BANCO DE DADOS --- //
 
+interface IInsightRow {
+  id?: number;
+  level: string;
+  since: string;
+  until: string;
+  data: any[];
+}
+
 class AppDB extends Dexie {
   uploadQueue!: Table<IUploadQueueItem>;
+  budgetItems!: Table<IBudgetItem, string>;
+  insights!: Table<IInsightRow>;
 
   constructor() {
     super('AppDB');
     this.version(1).stores({
-      uploadQueue: '++id, status'
+      uploadQueue: '++id, status',
+      budgetItems: 'id',
+      insights: '++id,[level+since+until]'
+    });
+
+    this.on('populate', () => {
+      this.budgetItems.bulkAdd([
+        { id: '1', name: 'Item 1', currentBudget: 10 },
+        { id: '2', name: 'Item 2', currentBudget: 20 },
+        { id: '3', name: 'Item 3', currentBudget: 30 }
+      ]);
     });
   }
 }
@@ -88,15 +108,19 @@ export async function processUploadQueue(): Promise<void> {
 
   for (const item of pending) {
     if (!item.id) continue;
-    const { id, file, type, name, size } = item;
+    const { id, file, name } = item;
 
     try {
       await db.uploadQueue.update(id, { status: 'uploading' });
 
-      if (type === 'image') {
-        await uploadImageToMeta(name, file);
-      } else {
-        await uploadVideoToMeta(name, size, file);
+      const form = new FormData();
+      const blob = new Blob([file]);
+      form.append('file', blob, name);
+
+      const res = await fetch('/upload', { method: 'POST', body: form });
+
+      if (!res.ok) {
+        throw new Error('Upload failed');
       }
 
       await db.uploadQueue.delete(id);
@@ -120,18 +144,7 @@ if (typeof window !== 'undefined') {
 }
 
 // --- FUNÇÕES AUXILIARES PARA UPLOAD --- //
-
-async function uploadImageToMeta(_name: string, _buffer: ArrayBuffer) {
-  return mockApi.uploadImage();
-}
-
-async function uploadVideoToMeta(
-  _name: string,
-  _size: number,
-  _buffer: ArrayBuffer
-) {
-  return mockApi.uploadImage();
-}
+// Mantido apenas para compatibilidade com módulos legados
 
 // --- TIPOS E FUNÇÕES DA API --- //
 
@@ -142,14 +155,14 @@ export interface IBudgetItem {
 }
 
 export async function fetchBudgetItems(): Promise<IBudgetItem[]> {
-  return [];
+  return db.budgetItems.toArray();
 }
 
 export async function updateBudget(
   id: string,
   value: number
 ): Promise<void> {
-  await Promise.resolve({ id, value });
+  await db.budgetItems.update(id, { currentBudget: value });
 }
 
 export async function createCampaign(
@@ -183,7 +196,30 @@ export async function getInsights(
   since: string,
   until: string
 ): Promise<any[]> {
-  return [];
+  const key = [level, since, until];
+
+  const fetchAndCache = async () => {
+    const params = new URLSearchParams({ level, since, until });
+    const res = await fetch(`/insights?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to fetch insights');
+    const data = await res.json();
+    await db.insights.put({ level, since, until, data });
+    return data;
+  };
+
+  if (navigator.onLine) {
+    try {
+      return await fetchAndCache();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const cached = await db.insights
+    .where(['level', 'since', 'until'])
+    .equals(key)
+    .first();
+  return cached?.data ?? [];
 }
 
 export { db };
