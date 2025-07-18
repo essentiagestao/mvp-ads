@@ -96,17 +96,26 @@ const CampaignWizard: React.FC = () => {
       )}
       <div className="flex space-x-2">
         {stepIndex > 0 && (
-          <button onClick={handleBack} className="button secondary">
+          <button
+            onClick={handleBack}
+            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+          >
             Voltar
           </button>
         )}
         {stepIndex < steps.length - 1 && (
-          <button onClick={handleNext} className="button primary">
+          <button
+            onClick={handleNext}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
             Próximo
           </button>
         )}
         {stepIndex === steps.length - 1 && (
-          <button onClick={handleFinish} className="button primary">
+          <button
+            onClick={handleFinish}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
             Finalizar
           </button>
         )}

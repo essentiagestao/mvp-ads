@@ -37,20 +37,24 @@ const MediaLibraryWithUpload: React.FC = () => {
   }, []);
 
   return (
-    <div className="media-page-container">
-      <div className="page-header">
-        <h1>Biblioteca de Mídia</h1>
+    <div className="p-4 space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-bold">Biblioteca de Mídia</h1>
         <button
           onClick={() => setIsUploadOpen(true)}
-          className="button primary"
+          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
         >
           Upload de Mídia
         </button>
       </div>
 
-      <fieldset className="filter-controls">
-        <legend>Filtrar por</legend>
-        <select value={filter} onChange={e => setFilter(e.target.value as Filter)}>
+      <fieldset className="space-y-2">
+        <legend className="font-medium">Filtrar por</legend>
+        <select
+          value={filter}
+          onChange={e => setFilter(e.target.value as Filter)}
+          className="border rounded px-2 py-1"
+        >
           <option value="all">Todos</option>
           <option value="image">Imagens</option>
           <option value="video">Vídeos</option>
@@ -60,7 +64,7 @@ const MediaLibraryWithUpload: React.FC = () => {
       {loading ? (
         <p>Carregando...</p>
       ) : filtered.length ? (
-        <div className="media-grid">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {filtered.map(item =>
             <MediaItem key={item.id} item={item} />
           )}

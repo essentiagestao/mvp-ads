@@ -109,7 +109,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
 
   return (
     <div
-      className="modal-backdrop"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={handleClose}
       onKeyDown={handleKeyDown}
       tabIndex={-1}
@@ -117,23 +117,23 @@ const UploadModal: React.FC<UploadModalProps> = ({
       role="dialog"
     >
       <div
-        className="modal-content"
+        className="bg-white rounded shadow-lg p-4 w-full max-w-md"
         onClick={e => e.stopPropagation()}
       >
-        <div className="modal-header">
-          <h2>Upload de Mídia</h2>
+        <div className="flex items-center justify-between border-b pb-2 mb-4">
+          <h2 className="text-lg font-bold">Upload de Mídia</h2>
           <button
             onClick={handleClose}
-            className="close-button"
+            className="text-xl leading-none"
             aria-label="Fechar modal"
           >
             &times;
           </button>
         </div>
 
-        <div className="modal-body">
+        <div className="space-y-4">
           <div
-            className={`drop-zone ${isDragging ? 'dragging' : ''}`}
+            className={`border-2 border-dashed rounded p-4 text-center ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -141,40 +141,38 @@ const UploadModal: React.FC<UploadModalProps> = ({
             <input
               type="file"
               id="file-input"
-              className="file-input"
+              className="hidden"
               multiple
               accept="image/jpeg,image/png,video/mp4,video/quicktime"
               onChange={handleFileSelect}
             />
-            <label htmlFor="file-input" className="file-label">
+            <label htmlFor="file-input" className="cursor-pointer text-blue-600">
               Arraste e solte aqui ou <strong>clique para selecionar</strong>
             </label>
           </div>
 
           {selectedFiles.length > 0 && (
-            <div className="file-list">
-              <h4>Arquivos para enviar:</h4>
-              <ul>
+            <div>
+              <h4 className="font-medium">Arquivos para enviar:</h4>
+              <ul className="list-disc list-inside text-sm space-y-1">
                 {selectedFiles.map((file, idx) => (
-                  <li key={`${file.name}-${idx}`}>
-                    {file.name}
-                  </li>
+                  <li key={`${file.name}-${idx}`}>{file.name}</li>
                 ))}
               </ul>
             </div>
           )}
         </div>
 
-        <div className="modal-footer">
+        <div className="mt-4 flex justify-end space-x-2">
           <button
             onClick={handleClose}
-            className="button secondary"
+            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
           >
             Cancelar
           </button>
           <button
             onClick={handleUpload}
-            className="button primary"
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
             disabled={selectedFiles.length === 0}
           >
             Enviar

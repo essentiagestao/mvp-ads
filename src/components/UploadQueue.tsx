@@ -59,12 +59,12 @@ const UploadQueue: React.FC = () => {
   const hasPendingOrFailed = items.some(i => i.status === 'pending' || i.status === 'failed');
 
   return (
-    <div className="upload-queue">
-      <div className="queue-header">
-        <h2>Fila de Upload</h2>
+    <div className="p-4 space-y-4 border rounded">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold">Fila de Upload</h2>
         <button
           onClick={handleProcessQueue}
-          className="button primary"
+          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
           disabled={!hasPendingOrFailed}
           aria-disabled={!hasPendingOrFailed}
         >
@@ -73,7 +73,7 @@ const UploadQueue: React.FC = () => {
       </div>
 
       {items.length > 0 ? (
-        <table className="queue-list">
+        <table className="min-w-full text-sm">
           <thead>
             <tr>
               <th>Arquivo</th>
@@ -84,17 +84,27 @@ const UploadQueue: React.FC = () => {
           </thead>
           <tbody>
             {items.map(item => (
-              <tr key={item.id} className={`queue-item status-${item.status}`}>
+              <tr key={item.id}>
                 <td>{item.name}</td>
                 <td>{item.type}</td>
                 <td>
-                  <span className={`status-badge ${item.status}`}>{item.status}</span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      item.status === 'pending'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : item.status === 'uploading'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {item.status}
+                  </span>
                 </td>
-                <td className="actions-cell">
+                <td className="space-x-2">
                   {item.status === 'failed' && (
                     <button
                       onClick={handleRetryItem}
-                      className="action-button retry"
+                      className="px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700"
                     >
                       Reenviar
                     </button>
@@ -102,7 +112,7 @@ const UploadQueue: React.FC = () => {
                   {(item.status === 'pending' || item.status === 'failed') && (
                     <button
                       onClick={() => handleCancelItem(item.id)}
-                      className="action-button cancel"
+                      className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
                     >
                       Cancelar
                     </button>
