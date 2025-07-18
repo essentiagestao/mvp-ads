@@ -19,8 +19,9 @@ Plataforma de Ads
    npm run dev
    ```
 
-O projeto utiliza a pasta `src` como raiz do Vite. Certifique-se de que o arquivo
-`index.html` permanece dentro de `src`.
+O projeto utiliza o Vite com `public/index.html` como ponto de entrada.
+Os módulos que interagem com a API da Meta foram movidos para `backend-meta/` e
+são simulados no ambiente do Codex por `src/mocks/handlers.ts`.
 
 As variáveis de ambiente declaradas em `.env.local` ficam disponíveis no código
 através de `import.meta.env`.

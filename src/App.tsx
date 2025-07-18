@@ -2,16 +2,14 @@ import React from 'react';
 import MediaLibraryWithUpload from './components/MediaLibraryWithUpload';
 import UploadQueue from './components/UploadQueue';
 import BudgetEditor from './components/BudgetEditor';
-import CampaignEditor from './components/CampaignEditor';
-import Reports from './components/Reports';
+import CriarCampanha from './pages/CriarCampanha';
 
 const App: React.FC = () => (
   <div className="app-container">
     <MediaLibraryWithUpload />
     <UploadQueue />
     <BudgetEditor />
-    <CampaignEditor />
-    <Reports />
+    <CriarCampanha />
   </div>
 );
 
