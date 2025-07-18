@@ -18,13 +18,13 @@ const MediaItem: React.FC<Props> = ({ item }) => {
   }, [item.file]);
 
   return (
-    <div className="media-item">
+    <div className="flex flex-col items-center space-y-2">
       {item.type === 'image' ? (
-        <img src={url} alt={item.name} />
+        <img src={url} alt={item.name} className="max-w-full" />
       ) : (
-        <video src={url} controls width={200} />
+        <video src={url} controls className="w-48" />
       )}
-      <p>{item.name}</p>
+      <p className="text-sm text-center">{item.name}</p>
     </div>
   );
 };

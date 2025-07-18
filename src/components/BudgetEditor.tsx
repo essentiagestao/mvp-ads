@@ -87,10 +87,10 @@ const BudgetEditor: React.FC = () => {
   const hasChanges = items.some(i => i.newBudget !== i.currentBudget);
 
   return (
-    <div className="budget-editor">
-      <h2>Edição de Orçamento</h2>
-      <div className="budget-table-container">
-        <table className="budget-table">
+    <div className="p-4 space-y-4 border rounded">
+      <h2 className="text-lg font-bold">Edição de Orçamento</h2>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm">
           <thead>
             <tr>
               <th>Nome</th>
@@ -111,7 +111,7 @@ const BudgetEditor: React.FC = () => {
                     disabled={updating}
                     min={0}
                     step={0.01}
-                    className="budget-input"
+                    className="border rounded px-2 py-1 w-full"
                   />
                 </td>
               </tr>
@@ -119,10 +119,10 @@ const BudgetEditor: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <div className="actions-footer">
+      <div className="pt-2">
         <button
           onClick={handleApplyChanges}
-          className="action-button"
+          className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-50"
           disabled={!hasChanges || updating}
         >
           {updating ? 'Atualizando...' : 'Aplicar Alterações'}
