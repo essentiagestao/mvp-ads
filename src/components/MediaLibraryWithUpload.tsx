@@ -82,7 +82,4 @@ const MediaLibraryWithUpload: React.FC = () => {
   );
 };
 
-// ... inclua aqui os subcomponentes MediaItem e UploadModal
-// mas sem mocks, apenas consumindo enqueueMediaUpload e db
-
 export default MediaLibraryWithUpload;
