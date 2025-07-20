@@ -2,28 +2,35 @@ import React, { useState, useCallback } from 'react';
 import CampaignAudience from './CampaignAudience';
 import CampaignBudget, { CampaignBudgetValues } from './CampaignBudget';
 import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
+import CampaignObjective from './CampaignObjective';
 import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
 
 interface WizardData {
+  objective: string;
   audienceId: string;
   budget: CampaignBudgetValues;
   creative: CampaignCreativeValues;
 }
 
 const initialData: WizardData = {
+  objective: 'LINK_CLICKS',
   audienceId: '',
   budget: { budgetType: 'daily', budgetAmount: 0, startDate: '', endDate: '' },
   creative: { files: [], message: '', link: '', page: '' },
 };
 
-const steps = ['audience', 'budget', 'creative'] as const;
+const steps = ['objective', 'audience', 'budget', 'creative'] as const;
 type Step = typeof steps[number];
 
 const CampaignWizard: React.FC = () => {
-  const [step, setStep] = useState<Step>('audience');
+  const [step, setStep] = useState<Step>('objective');
   const [data, setData] = useState<WizardData>(initialData);
   const stepIndex = steps.indexOf(step);
+
+  const handleObjectiveChange = useCallback((objective: string) => {
+    setData(prev => ({ ...prev, objective }));
+  }, []);
 
   const handleAudienceChange = useCallback((audienceId: string) => {
     setData(prev => ({ ...prev, audienceId }));
@@ -52,7 +59,7 @@ const CampaignWizard: React.FC = () => {
   const handleFinish = useCallback(async () => {
     try {
       toast.info('Publicando campanha...');
-      const campaignId = await createCampaign('Nova Campanha', 'LINK_CLICKS');
+      const campaignId = await createCampaign('Nova Campanha', data.objective);
       const adSetId = await createAdSet(campaignId, data.audienceId, {
         type: data.budget.budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
         value: data.budget.budgetAmount,
@@ -60,7 +67,7 @@ const CampaignWizard: React.FC = () => {
       await createAd(adSetId, data.creative.message, data.creative.files);
       toast.success('Campanha publicada com sucesso');
       setData(initialData);
-      setStep('audience');
+      setStep('objective');
     } catch (err) {
       console.error(err);
       toast.error('Falha ao publicar campanha');
@@ -70,6 +77,12 @@ const CampaignWizard: React.FC = () => {
   return (
     <div className="p-4 border rounded space-y-4">
       <h2 className="text-lg font-bold">Campaign Wizard</h2>
+      {step === 'objective' && (
+        <CampaignObjective
+          objective={data.objective}
+          onChange={handleObjectiveChange}
+        />
+      )}
       {step === 'audience' && (
         <CampaignAudience
           audienceId={data.audienceId}
