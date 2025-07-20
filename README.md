@@ -18,6 +18,9 @@ Plataforma de Ads
    ```bash
    npm run dev
    ```
+   O Vite executará em `http://localhost:5173`. Em ambientes remotos como
+   Codespaces, o arquivo `vite.config.ts` já define `server.host` para permitir
+   acesso externo.
 
 4. Execute os testes automatizados:
    ```bash
