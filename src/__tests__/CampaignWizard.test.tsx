@@ -21,6 +21,9 @@ describe('CampaignWizard', () => {
   it('steps through wizard and publishes campaign', async () => {
     render(<CampaignWizard />);
 
+    fireEvent.click(screen.getByLabelText(/Conversões/i));
+    fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
+
     const audienceInput = screen.getByLabelText(/Audience ID/i);
     fireEvent.change(audienceInput, { target: { value: 'aud-1' } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
@@ -44,7 +47,7 @@ describe('CampaignWizard', () => {
     fireEvent.click(screen.getByRole('button', { name: /Finalizar/i }));
 
     await waitFor(() => {
-      expect(createCampaign).toHaveBeenCalled();
+      expect(createCampaign).toHaveBeenCalledWith('Nova Campanha', 'CONVERSIONS');
       expect(createAdSet).toHaveBeenCalled();
       expect(createAd).toHaveBeenCalled();
     });
