@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import UploadQueue from '../components/UploadQueue';
 import { vi } from 'vitest';
 import { processUploadQueue, db } from '../components/mediaQueue';
@@ -60,17 +60,23 @@ describe('UploadQueue', () => {
     render(<UploadQueue />);
     const button = await screen.findByRole('button', { name: /Publicar Mudanças/i });
     fireEvent.click(button);
-    expect(processUploadQueue).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(processUploadQueue).toHaveBeenCalled();
+    });
   });
 
   it('retries failed items and cancels pending', async () => {
     render(<UploadQueue />);
     const retry = await screen.findByRole('button', { name: /Reenviar/i });
     fireEvent.click(retry);
-    expect(processUploadQueue).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(processUploadQueue).toHaveBeenCalled();
+    });
 
     const cancelButtons = screen.getAllByRole('button', { name: /Cancelar/i });
     fireEvent.click(cancelButtons[0]);
-    expect(db.uploadQueue.delete).toHaveBeenCalledWith(1);
+    await waitFor(() => {
+      expect(db.uploadQueue.delete).toHaveBeenCalledWith(1);
+    });
   });
 });
