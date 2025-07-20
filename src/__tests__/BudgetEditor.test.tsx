@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import BudgetEditor from '../components/BudgetEditor';
 import { vi } from 'vitest';
 import { fetchBudgetItems, updateBudget } from '../components/mediaQueue';
@@ -16,16 +17,14 @@ describe('BudgetEditor', () => {
 
     render(<BudgetEditor />);
 
-    // Garante que tudo foi carregado
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Aplicar Alterações/i })).toBeInTheDocument();
-    });
+    const input = await screen.findByDisplayValue('10');
 
-    const input = await screen.findByDisplayValue('10'); // Ou use getByRole('spinbutton')
-    fireEvent.change(input, { target: { value: '20' } });
+    // Substitui o valor corretamente simulando o comportamento real
+    await userEvent.clear(input);
+    await userEvent.type(input, '20');
 
     const button = screen.getByRole('button', { name: /Aplicar Alterações/i });
-    fireEvent.click(button);
+    await userEvent.click(button);
 
     await waitFor(() => {
       expect(updateBudget).toHaveBeenCalledWith('1', 20);
