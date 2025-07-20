@@ -3,16 +3,10 @@ import BudgetEditor from '../components/BudgetEditor';
 import { vi } from 'vitest';
 import { fetchBudgetItems, updateBudget } from '../components/mediaQueue';
 
-defineGlobals();
-
-vi.mock('../components/mediaQueue', () => {
-  return {
-    fetchBudgetItems: vi.fn(),
-    updateBudget: vi.fn(),
-  };
-});
-
-function defineGlobals() {}
+vi.mock('../components/mediaQueue', () => ({
+  fetchBudgetItems: vi.fn(),
+  updateBudget: vi.fn(),
+}));
 
 describe('BudgetEditor', () => {
   it('allows editing budget and applying changes', async () => {
@@ -22,7 +16,12 @@ describe('BudgetEditor', () => {
 
     render(<BudgetEditor />);
 
-    const input = await screen.findByDisplayValue('10');
+    // Garante que tudo foi carregado
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Aplicar Alterações/i })).toBeInTheDocument();
+    });
+
+    const input = await screen.findByDisplayValue('10'); // Ou use getByRole('spinbutton')
     fireEvent.change(input, { target: { value: '20' } });
 
     const button = screen.getByRole('button', { name: /Aplicar Alterações/i });
