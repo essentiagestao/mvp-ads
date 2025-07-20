@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import CampaignBudget, { CampaignBudgetValues } from '../components/Campaign/CampaignBudget';
 import { vi } from 'vitest';
 
@@ -20,7 +21,9 @@ describe('CampaignBudget', () => {
     render(<CampaignBudget {...initial} onChange={handleChange} />);
 
     const amountInput = screen.getByLabelText(/Valor do orçamento/i);
-    fireEvent.change(amountInput, { target: { value: '20' } });
+    await act(async () => {
+      fireEvent.change(amountInput, { target: { value: '20' } });
+    });
     await waitFor(() => {
       expect(handleChange).toHaveBeenCalledWith({ ...initial, budgetAmount: 20 });
     });
@@ -28,8 +31,10 @@ describe('CampaignBudget', () => {
     const startInput = screen.getByLabelText(/Data de início/i);
     const endInput = screen.getByLabelText(/Data de término/i);
 
-    fireEvent.change(startInput, { target: { value: '2023-01-02' } });
-    fireEvent.change(endInput, { target: { value: '2023-01-01' } });
+    await act(async () => {
+      fireEvent.change(startInput, { target: { value: '2023-01-02' } });
+      fireEvent.change(endInput, { target: { value: '2023-01-01' } });
+    });
 
     await waitFor(() => {
       expect(handleChange).toHaveBeenLastCalledWith({
@@ -47,7 +52,9 @@ describe('CampaignBudget', () => {
       ).toBeInTheDocument();
     });
 
-    fireEvent.change(endInput, { target: { value: '2023-01-03' } });
+    await act(async () => {
+      fireEvent.change(endInput, { target: { value: '2023-01-03' } });
+    });
     await waitFor(() => {
       expect(handleChange).toHaveBeenLastCalledWith({
         ...initial,
