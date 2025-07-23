@@ -48,6 +48,9 @@ describe('CampaignWizard', () => {
     fireEvent.change(screen.getByLabelText(/Página/i), {
       target: { value: 'page-1' },
     });
+    fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
+
+    expect(await screen.findByText(/Resumo/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Finalizar/i }));
 
     await waitFor(() => {

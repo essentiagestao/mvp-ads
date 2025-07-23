@@ -1,7 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export const wizardSteps = ['objective', 'audience', 'budget', 'creative'] as const;
+export const wizardSteps = [
+  'objective',
+  'audience',
+  'budget',
+  'creative',
+  'summary',
+] as const;
 export type WizardStep = typeof wizardSteps[number];
 
 export type BudgetType = 'daily' | 'total';
