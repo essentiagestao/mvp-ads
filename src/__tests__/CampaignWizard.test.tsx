@@ -21,7 +21,10 @@ function defineGlobals() {}
 describe('CampaignWizard', () => {
   afterEach(() => {
     useCampaignStore.setState({
-      budget: { budgetType: 'daily', budgetAmount: 10, startDate: '', endDate: '' },
+      budgetAmount: 10,
+      budgetType: 'daily',
+      startDate: '',
+      endDate: '',
     });
   });
   it('steps through wizard and publishes campaign', async () => {

@@ -14,14 +14,21 @@ export const initialBudget: CampaignBudgetValues = {
   endDate: '',
 };
 
-interface CampaignState {
-  budget: CampaignBudgetValues;
-  setBudget: (b: CampaignBudgetValues) => void;
+interface CampaignState extends CampaignBudgetValues {
+  setBudgetAmount: (budgetAmount: number) => void;
+  setBudgetType: (budgetType: 'daily' | 'total') => void;
+  setStartDate: (startDate: string) => void;
+  setEndDate: (endDate: string) => void;
+  reset: () => void;
 }
 
 export const useCampaignStore = create<CampaignState>(set => ({
-  budget: initialBudget,
-  setBudget: budget => set({ budget }),
+  ...initialBudget,
+  setBudgetAmount: budgetAmount => set({ budgetAmount }),
+  setBudgetType: budgetType => set({ budgetType }),
+  setStartDate: startDate => set({ startDate }),
+  setEndDate: endDate => set({ endDate }),
+  reset: () => set({ ...initialBudget }),
 }));
 
 export default useCampaignStore;

@@ -5,7 +5,7 @@ import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
 import CampaignObjective from './CampaignObjective';
 import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
-import useCampaignStore, { initialBudget } from '../../stores/useCampaignStore';
+import useCampaignStore, { CampaignBudgetValues } from '../../stores/useCampaignStore';
 
 interface WizardData {
   objective: string;
@@ -26,7 +26,18 @@ const CampaignWizard: React.FC = () => {
   const [step, setStep] = useState<Step>('objective');
   const [data, setData] = useState<WizardData>(initialData);
   const stepIndex = steps.indexOf(step);
-  const { budget, setBudget } = useCampaignStore();
+  const {
+    budgetAmount,
+    budgetType,
+    startDate,
+    endDate,
+    setBudgetAmount,
+    setBudgetType,
+    setStartDate,
+    setEndDate,
+    reset,
+  } = useCampaignStore();
+  const budget = { budgetAmount, budgetType, startDate, endDate };
 
   const handleObjectiveChange = useCallback((objective: string) => {
     setData(prev => ({ ...prev, objective }));
@@ -40,6 +51,16 @@ const CampaignWizard: React.FC = () => {
   const handleCreativeChange = useCallback((creative: CampaignCreativeValues) => {
     setData(prev => ({ ...prev, creative }));
   }, []);
+
+  const handleBudgetChange = useCallback(
+    (values: CampaignBudgetValues) => {
+      setBudgetAmount(values.budgetAmount);
+      setBudgetType(values.budgetType);
+      setStartDate(values.startDate);
+      setEndDate(values.endDate);
+    },
+    [setBudgetAmount, setBudgetType, setStartDate, setEndDate]
+  );
 
   const handleNext = useCallback(() => {
     if (stepIndex < steps.length - 1) {
@@ -64,13 +85,13 @@ const CampaignWizard: React.FC = () => {
       await createAd(adSetId, data.creative.message, data.creative.files);
       toast.success('Campanha publicada com sucesso');
       setData(initialData);
-      setBudget(initialBudget);
+      reset();
       setStep('objective');
     } catch (err) {
       console.error(err);
       toast.error('Falha ao publicar campanha');
     }
-  }, [budget, data, setBudget]);
+  }, [budgetAmount, budgetType, startDate, endDate, data, reset]);
 
   return (
     <div className="p-4 border rounded space-y-4">
@@ -87,7 +108,9 @@ const CampaignWizard: React.FC = () => {
           onChange={handleAudienceChange}
         />
       )}
-      {step === 'budget' && <CampaignBudget {...budget} onChange={setBudget} />}
+      {step === 'budget' && (
+        <CampaignBudget {...budget} onChange={handleBudgetChange} />
+      )}
       {step === 'creative' && (
         <CampaignCreative
           files={data.creative.files}
