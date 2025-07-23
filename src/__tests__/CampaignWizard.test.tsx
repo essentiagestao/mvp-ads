@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CampaignWizard from '../components/Campaign/CampaignWizard';
-import { vi, afterEach } from 'vitest';
+import { vi, beforeEach } from 'vitest';
 import useCampaignStore from '../stores/useCampaignStore';
 import { createCampaign, createAdSet, createAd } from '../components/mediaQueue';
 
@@ -19,13 +19,8 @@ vi.mock('react-toastify', () => ({
 function defineGlobals() {}
 
 describe('CampaignWizard', () => {
-  afterEach(() => {
-    useCampaignStore.setState({
-      budgetAmount: 10,
-      budgetType: 'daily',
-      startDate: '',
-      endDate: '',
-    });
+  beforeEach(() => {
+    useCampaignStore.getState().reset();
   });
   it('steps through wizard and publishes campaign', async () => {
     render(<CampaignWizard />);
