@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type BudgetType = 'daily' | 'lifetime';
+export type BudgetType = 'daily' | 'total';
 
 export interface CampaignBudgetValues {
   budgetType: BudgetType;
@@ -55,8 +55,8 @@ const CampaignBudget: React.FC<CampaignBudgetProps> = ({
         <label className="flex items-center space-x-1">
           <input
             type="radio"
-            value="lifetime"
-            checked={budgetType === 'lifetime'}
+            value="total"
+            checked={budgetType === 'total'}
             onChange={(e) => handleChange('budgetType', e.target.value)}
           />
           <span>Vitalício</span>
