@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const wizardSteps = ['objective', 'audience', 'budget', 'creative'] as const;
 export type WizardStep = typeof wizardSteps[number];
@@ -68,27 +69,38 @@ export interface CampaignState extends CampaignValues {
   resetCampaign: () => void;
 }
 
-export const useCampaignStore = create<CampaignState>(set => ({
-  ...initialCampaign,
-  step: initialStep,
-  setBudgetAmount: budgetAmount => set({ budgetAmount }),
-  setBudgetType: budgetType => set({ budgetType }),
-  setStartDate: startDate => set({ startDate }),
-  setEndDate: endDate => set({ endDate }),
-  setObjective: objective => set({ objective }),
-  setAudienceId: audienceId => set({ audienceId }),
-  setCreative: creative => set({ creative }),
-  setTargeting: targeting => set({ targeting }),
-  setPlacements: placements => set({ placements }),
-  setMedia: media => set({ media }),
-  setStep: step => set({ step }),
-  reset: () =>
-    set({
-      ...initialBudget,
-      budgetAmount: 0,
+export const useCampaignStore = create<CampaignState>()(
+  persist(
+    set => ({
+      ...initialCampaign,
+      step: initialStep,
+      setBudgetAmount: budgetAmount => set({ budgetAmount }),
+      setBudgetType: budgetType => set({ budgetType }),
+      setStartDate: startDate => set({ startDate }),
+      setEndDate: endDate => set({ endDate }),
+      setObjective: objective => set({ objective }),
+      setAudienceId: audienceId => set({ audienceId }),
+      setCreative: creative => set({ creative }),
+      setTargeting: targeting => set({ targeting }),
+      setPlacements: placements => set({ placements }),
+      setMedia: media => set({ media }),
+      setStep: step => set({ step }),
+      reset: () =>
+        set({
+          ...initialBudget,
+          budgetAmount: 0,
+        }),
+      resetCampaign: () => {
+        set({ ...initialCampaign, step: initialStep });
+        localStorage.removeItem('campaign-store');
+      },
     }),
-  resetCampaign: () => set({ ...initialCampaign, step: initialStep }),
-}));
+    {
+      name: 'campaign-store',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export const selectBudgetAmount = (state: CampaignState) => state.budgetAmount;
 export const selectBudgetType = (state: CampaignState) => state.budgetType;
