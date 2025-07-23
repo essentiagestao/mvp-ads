@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import CampaignAudience from './CampaignAudience';
 import CampaignBudget from './CampaignBudget';
 import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
+import CampaignSummary from './CampaignSummary';
 import CampaignObjective from './CampaignObjective';
 import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
@@ -21,6 +22,9 @@ import useCampaignStore, {
   selectObjective,
   selectAudienceId,
   selectCreative,
+  selectTargeting,
+  selectPlacements,
+  selectMedia,
   selectSetObjective,
   selectSetAudienceId,
   selectSetCreative,
@@ -38,6 +42,9 @@ const CampaignWizard: React.FC = () => {
   const objective = useCampaignStore(selectObjective);
   const audienceId = useCampaignStore(selectAudienceId);
   const creative = useCampaignStore(selectCreative);
+  const targeting = useCampaignStore(selectTargeting);
+  const placements = useCampaignStore(selectPlacements);
+  const media = useCampaignStore(selectMedia);
   const setBudgetAmount = useCampaignStore(selectSetBudgetAmount);
   const setBudgetType = useCampaignStore(selectSetBudgetType);
   const setStartDate = useCampaignStore(selectSetStartDate);
@@ -133,6 +140,20 @@ const CampaignWizard: React.FC = () => {
           link={creative.link}
           page={creative.page}
           onChange={handleCreativeChange}
+        />
+      )}
+      {step === 'summary' && (
+        <CampaignSummary
+          objective={objective}
+          audienceId={audienceId}
+          budgetType={budgetType}
+          budgetAmount={budgetAmount}
+          startDate={startDate}
+          endDate={endDate}
+          creative={creative}
+          targeting={targeting}
+          placements={placements}
+          media={media}
         />
       )}
       <div className="flex space-x-2">
