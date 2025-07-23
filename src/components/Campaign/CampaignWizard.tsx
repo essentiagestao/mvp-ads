@@ -99,8 +99,22 @@ const CampaignWizard: React.FC = () => {
   }, [stepIndex, setStep]);
 
   const handleFinish = useCallback(async () => {
+    const campaign = {
+      objective,
+      audienceId,
+      budgetType,
+      budgetAmount,
+      startDate,
+      endDate,
+      creative,
+      targeting,
+      placements,
+      media,
+    };
+    console.log(campaign);
     try {
       toast.info('Publicando campanha...');
+      await new Promise((r) => setTimeout(r, 1000));
       const campaignId = await createCampaign('Nova Campanha', objective);
       const adSetId = await createAdSet(campaignId, audienceId, {
         type: budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
@@ -113,7 +127,19 @@ const CampaignWizard: React.FC = () => {
       console.error(err);
       toast.error('Falha ao publicar campanha');
     }
-  }, [budgetAmount, budgetType, objective, audienceId, creative, resetCampaign]);
+  }, [
+    objective,
+    audienceId,
+    budgetType,
+    budgetAmount,
+    startDate,
+    endDate,
+    creative,
+    targeting,
+    placements,
+    media,
+    resetCampaign,
+  ]);
 
   return (
     <div className="p-4 border rounded space-y-4">
