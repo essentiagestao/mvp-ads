@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export interface CampaignBudgetValues {
-  budgetType: 'daily' | 'lifetime';
+  budgetType: 'daily' | 'total';
   budgetAmount: number;
   startDate: string;
   endDate: string;
