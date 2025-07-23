@@ -9,7 +9,7 @@ export interface CampaignBudgetValues {
 
 export const initialBudget: CampaignBudgetValues = {
   budgetType: 'daily',
-  budgetAmount: 10,
+  budgetAmount: 0,
   startDate: '',
   endDate: '',
 };
@@ -28,7 +28,10 @@ export const useCampaignStore = create<CampaignState>(set => ({
   setBudgetType: budgetType => set({ budgetType }),
   setStartDate: startDate => set({ startDate }),
   setEndDate: endDate => set({ endDate }),
-  reset: () => set({ ...initialBudget }),
+  reset: () => set({
+    ...initialBudget,
+    budgetAmount: 0,
+  }),
 }));
 
 export const selectBudgetAmount = (state: CampaignState) => state.budgetAmount;
