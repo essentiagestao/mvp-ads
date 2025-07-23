@@ -61,6 +61,8 @@ export const initialCampaign: CampaignValues = {
 export interface CampaignState extends CampaignValues {
   step: WizardStep;
   setStep: (step: WizardStep) => void;
+  nextStep: () => void;
+  previousStep: () => void;
   setBudgetAmount: (budgetAmount: number) => void;
   setBudgetType: (budgetType: BudgetType) => void;
   setStartDate: (startDate: string) => void;
@@ -91,6 +93,18 @@ export const useCampaignStore = create<CampaignState>()(
       setPlacements: placements => set({ placements }),
       setMedia: media => set({ media }),
       setStep: step => set({ step }),
+      nextStep: () =>
+        set(state => {
+          const idx = wizardSteps.indexOf(state.step);
+          return idx < wizardSteps.length - 1
+            ? { step: wizardSteps[idx + 1] }
+            : {};
+        }),
+      previousStep: () =>
+        set(state => {
+          const idx = wizardSteps.indexOf(state.step);
+          return idx > 0 ? { step: wizardSteps[idx - 1] } : {};
+        }),
       reset: () =>
         set({
           ...initialBudget,
@@ -119,6 +133,8 @@ export const selectTargeting = (state: CampaignState) => state.targeting;
 export const selectPlacements = (state: CampaignState) => state.placements;
 export const selectMedia = (state: CampaignState) => state.media;
 export const selectStep = (state: CampaignState) => state.step;
+export const selectNextStep = (state: CampaignState) => state.nextStep;
+export const selectPreviousStep = (state: CampaignState) => state.previousStep;
 
 export const selectSetBudgetAmount = (state: CampaignState) =>
   state.setBudgetAmount;
