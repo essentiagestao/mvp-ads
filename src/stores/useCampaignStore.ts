@@ -31,4 +31,16 @@ export const useCampaignStore = create<CampaignState>(set => ({
   reset: () => set({ ...initialBudget }),
 }));
 
+export const selectBudgetAmount = (state: CampaignState) => state.budgetAmount;
+export const selectBudgetType = (state: CampaignState) => state.budgetType;
+export const selectStartDate = (state: CampaignState) => state.startDate;
+export const selectEndDate = (state: CampaignState) => state.endDate;
+
+export const selectSetBudgetAmount = (state: CampaignState) =>
+  state.setBudgetAmount;
+export const selectSetBudgetType = (state: CampaignState) => state.setBudgetType;
+export const selectSetStartDate = (state: CampaignState) => state.setStartDate;
+export const selectSetEndDate = (state: CampaignState) => state.setEndDate;
+export const selectReset = (state: CampaignState) => state.reset;
+
 export default useCampaignStore;
