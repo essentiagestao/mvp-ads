@@ -32,7 +32,7 @@ Plataforma de Ads
    npm run build
    ```
 
-O projeto utiliza o Vite com `public/index.html` como ponto de entrada.
+O projeto utiliza o Vite com `index.html` na raiz do repositório como ponto de entrada.
 Os módulos que interagem com a API da Meta foram movidos para `backend-meta/` e
 são simulados no ambiente do Codex por `src/mocks/handlers.ts`.
 
