@@ -2,11 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const wizardSteps = [
-  'objective',
-  'audience',
   'budget',
-  'creative',
-  'summary',
+  'targeting',
+  'content',
+  'review',
 ] as const;
 export type WizardStep = typeof wizardSteps[number];
 
@@ -30,7 +29,7 @@ export interface CampaignBudgetValues {
   endDate: string;
 }
 
-export const initialStep: WizardStep = 'objective';
+export const initialStep: WizardStep = 'budget';
 
 export const initialBudget: CampaignBudgetValues = {
   budgetType: 'daily',
@@ -60,9 +59,12 @@ export const initialCampaign: CampaignValues = {
 
 export interface CampaignState extends CampaignValues {
   step: WizardStep;
+  stepIndex: number;
   setStep: (step: WizardStep) => void;
   nextStep: () => void;
   previousStep: () => void;
+  goNext: () => void;
+  goBack: () => void;
   setBudgetAmount: (budgetAmount: number) => void;
   setBudgetType: (budgetType: BudgetType) => void;
   setStartDate: (startDate: string) => void;
@@ -79,42 +81,57 @@ export interface CampaignState extends CampaignValues {
 
 export const useCampaignStore = create<CampaignState>()(
   persist(
-    set => ({
-      ...initialCampaign,
-      step: initialStep,
-      setBudgetAmount: budgetAmount => set({ budgetAmount }),
-      setBudgetType: budgetType => set({ budgetType }),
-      setStartDate: startDate => set({ startDate }),
-      setEndDate: endDate => set({ endDate }),
-      setObjective: objective => set({ objective }),
-      setAudienceId: audienceId => set({ audienceId }),
-      setCreative: creative => set({ creative }),
-      setTargeting: targeting => set({ targeting }),
-      setPlacements: placements => set({ placements }),
-      setMedia: media => set({ media }),
-      setStep: step => set({ step }),
-      nextStep: () =>
-        set(state => {
-          const idx = wizardSteps.indexOf(state.step);
-          return idx < wizardSteps.length - 1
-            ? { step: wizardSteps[idx + 1] }
-            : {};
-        }),
-      previousStep: () =>
-        set(state => {
-          const idx = wizardSteps.indexOf(state.step);
-          return idx > 0 ? { step: wizardSteps[idx - 1] } : {};
-        }),
-      reset: () =>
-        set({
-          ...initialBudget,
-          budgetAmount: 0,
-        }),
+    (set, get) => {
+      const setStep = (step: WizardStep) =>
+        set({ step, stepIndex: wizardSteps.indexOf(step) });
+      const next = () => {
+        const idx = get().stepIndex;
+        if (idx < wizardSteps.length - 1) {
+          const step = wizardSteps[idx + 1];
+          set({ step, stepIndex: idx + 1 });
+        }
+      };
+      const previous = () => {
+        const idx = get().stepIndex;
+        if (idx > 0) {
+          const step = wizardSteps[idx - 1];
+          set({ step, stepIndex: idx - 1 });
+        }
+      };
+      return {
+        ...initialCampaign,
+        step: initialStep,
+        stepIndex: wizardSteps.indexOf(initialStep),
+        setBudgetAmount: budgetAmount => set({ budgetAmount }),
+        setBudgetType: budgetType => set({ budgetType }),
+        setStartDate: startDate => set({ startDate }),
+        setEndDate: endDate => set({ endDate }),
+        setObjective: objective => set({ objective }),
+        setAudienceId: audienceId => set({ audienceId }),
+        setCreative: creative => set({ creative }),
+        setTargeting: targeting => set({ targeting }),
+        setPlacements: placements => set({ placements }),
+        setMedia: media => set({ media }),
+        setStep,
+        nextStep: next,
+        previousStep: previous,
+        goNext: next,
+        goBack: previous,
+        reset: () =>
+          set({
+            ...initialBudget,
+            budgetAmount: 0,
+          }),
       resetCampaign: () => {
-        set({ ...initialCampaign, step: initialStep });
+        set({
+          ...initialCampaign,
+          step: initialStep,
+          stepIndex: wizardSteps.indexOf(initialStep),
+        });
         localStorage.removeItem('campaign-store');
       },
-    }),
+      };
+    },
     {
       name: 'campaign-store',
       storage: createJSONStorage(() => localStorage),
@@ -135,6 +152,9 @@ export const selectMedia = (state: CampaignState) => state.media;
 export const selectStep = (state: CampaignState) => state.step;
 export const selectNextStep = (state: CampaignState) => state.nextStep;
 export const selectPreviousStep = (state: CampaignState) => state.previousStep;
+export const selectStepIndex = (state: CampaignState) => state.stepIndex;
+export const selectGoNext = (state: CampaignState) => state.goNext;
+export const selectGoBack = (state: CampaignState) => state.goBack;
 
 export const selectSetBudgetAmount = (state: CampaignState) =>
   state.setBudgetAmount;

@@ -20,9 +20,9 @@ describe('useCampaignStore persistence', () => {
 
   it('resetCampaign clears memory and storage', async () => {
     const { default: useCampaignStore } = await import('../stores/useCampaignStore');
-    useCampaignStore.getState().setStep('creative');
+    useCampaignStore.getState().setStep('content');
     useCampaignStore.getState().resetCampaign();
-    expect(useCampaignStore.getState().step).toBe('objective');
+    expect(useCampaignStore.getState().step).toBe('budget');
     expect(localStorage.getItem('campaign-store')).toBeNull();
   });
 });
