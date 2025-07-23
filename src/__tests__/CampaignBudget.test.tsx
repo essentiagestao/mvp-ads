@@ -1,7 +1,8 @@
 // src/__tests__/CampaignBudget.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import { act } from 'react';
-import CampaignBudget, { CampaignBudgetValues } from '../components/Campaign/CampaignBudget';
+import CampaignBudget from '../components/Campaign/CampaignBudget';
+import { CampaignBudgetValues } from '../stores/useCampaignStore';
 import { vi, describe, it, expect } from 'vitest';
 
 describe('CampaignBudget', () => {

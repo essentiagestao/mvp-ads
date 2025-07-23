@@ -1,13 +1,5 @@
 import React from 'react';
-
-export type BudgetType = 'daily' | 'total';
-
-export interface CampaignBudgetValues {
-  budgetType: BudgetType;
-  budgetAmount: number;
-  startDate: string;
-  endDate: string;
-}
+import { CampaignBudgetValues, BudgetType } from '../../stores/useCampaignStore';
 
 interface CampaignBudgetProps extends CampaignBudgetValues {
   onChange: (values: CampaignBudgetValues) => void;

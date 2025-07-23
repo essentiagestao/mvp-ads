@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 
+export type BudgetType = 'daily' | 'total';
+
 export interface CampaignBudgetValues {
-  budgetType: 'daily' | 'total';
+  budgetType: BudgetType;
   budgetAmount: number;
   startDate: string;
   endDate: string;
@@ -16,7 +18,7 @@ export const initialBudget: CampaignBudgetValues = {
 
 interface CampaignState extends CampaignBudgetValues {
   setBudgetAmount: (budgetAmount: number) => void;
-  setBudgetType: (budgetType: 'daily' | 'total') => void;
+  setBudgetType: (budgetType: BudgetType) => void;
   setStartDate: (startDate: string) => void;
   setEndDate: (endDate: string) => void;
   reset: () => void;
