@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 
+export const wizardSteps = ['objective', 'audience', 'budget', 'creative'] as const;
+export type WizardStep = typeof wizardSteps[number];
+
 export type BudgetType = 'daily' | 'total';
 
 export interface CampaignCreativeValues {
@@ -19,6 +22,8 @@ export interface CampaignBudgetValues {
   startDate: string;
   endDate: string;
 }
+
+export const initialStep: WizardStep = 'objective';
 
 export const initialBudget: CampaignBudgetValues = {
   budgetType: 'daily',
@@ -46,7 +51,9 @@ export const initialCampaign: CampaignValues = {
   media: [],
 };
 
-interface CampaignState extends CampaignValues {
+export interface CampaignState extends CampaignValues {
+  step: WizardStep;
+  setStep: (step: WizardStep) => void;
   setBudgetAmount: (budgetAmount: number) => void;
   setBudgetType: (budgetType: BudgetType) => void;
   setStartDate: (startDate: string) => void;
@@ -63,6 +70,7 @@ interface CampaignState extends CampaignValues {
 
 export const useCampaignStore = create<CampaignState>(set => ({
   ...initialCampaign,
+  step: initialStep,
   setBudgetAmount: budgetAmount => set({ budgetAmount }),
   setBudgetType: budgetType => set({ budgetType }),
   setStartDate: startDate => set({ startDate }),
@@ -73,12 +81,13 @@ export const useCampaignStore = create<CampaignState>(set => ({
   setTargeting: targeting => set({ targeting }),
   setPlacements: placements => set({ placements }),
   setMedia: media => set({ media }),
+  setStep: step => set({ step }),
   reset: () =>
     set({
       ...initialBudget,
       budgetAmount: 0,
     }),
-  resetCampaign: () => set(initialCampaign),
+  resetCampaign: () => set({ ...initialCampaign, step: initialStep }),
 }));
 
 export const selectBudgetAmount = (state: CampaignState) => state.budgetAmount;
@@ -91,6 +100,7 @@ export const selectCreative = (state: CampaignState) => state.creative;
 export const selectTargeting = (state: CampaignState) => state.targeting;
 export const selectPlacements = (state: CampaignState) => state.placements;
 export const selectMedia = (state: CampaignState) => state.media;
+export const selectStep = (state: CampaignState) => state.step;
 
 export const selectSetBudgetAmount = (state: CampaignState) =>
   state.setBudgetAmount;
@@ -103,6 +113,7 @@ export const selectSetCreative = (state: CampaignState) => state.setCreative;
 export const selectSetTargeting = (state: CampaignState) => state.setTargeting;
 export const selectSetPlacements = (state: CampaignState) => state.setPlacements;
 export const selectSetMedia = (state: CampaignState) => state.setMedia;
+export const selectSetStep = (state: CampaignState) => state.setStep;
 export const selectReset = (state: CampaignState) => state.reset;
 export const selectResetCampaign = (state: CampaignState) => state.resetCampaign;
 
