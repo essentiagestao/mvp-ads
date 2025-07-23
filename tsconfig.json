@@ -17,9 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]
-    }
+    },
+    "types": ["vitest/globals","vitest","@testing-library/jest-dom"]
   },
-  // use glob patterns para incluir .ts e .tsx dentro de src
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
