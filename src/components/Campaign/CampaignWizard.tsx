@@ -14,7 +14,6 @@ import useCampaignStore, {
   selectStartDate,
   selectEndDate,
   selectStep,
-  selectSetStep,
   selectSetBudgetAmount,
   selectSetBudgetType,
   selectSetStartDate,
@@ -29,11 +28,12 @@ import useCampaignStore, {
   selectSetAudienceId,
   selectSetCreative,
   selectResetCampaign,
+  selectNextStep,
+  selectPreviousStep,
 } from '../../stores/useCampaignStore';
 
 const CampaignWizard: React.FC = () => {
   const step = useCampaignStore(selectStep);
-  const setStep = useCampaignStore(selectSetStep);
   const stepIndex = wizardSteps.indexOf(step);
   const budgetAmount = useCampaignStore(selectBudgetAmount);
   const budgetType = useCampaignStore(selectBudgetType);
@@ -53,6 +53,8 @@ const CampaignWizard: React.FC = () => {
   const setAudienceId = useCampaignStore(selectSetAudienceId);
   const setCreative = useCampaignStore(selectSetCreative);
   const resetCampaign = useCampaignStore(selectResetCampaign);
+  const nextStep = useCampaignStore(selectNextStep);
+  const previousStep = useCampaignStore(selectPreviousStep);
 
   const handleObjectiveChange = useCallback(
     (value: string) => {
@@ -87,16 +89,12 @@ const CampaignWizard: React.FC = () => {
   );
 
   const handleNext = useCallback(() => {
-    if (stepIndex < wizardSteps.length - 1) {
-      setStep(wizardSteps[stepIndex + 1]);
-    }
-  }, [stepIndex, setStep]);
+    nextStep();
+  }, [nextStep]);
 
   const handleBack = useCallback(() => {
-    if (stepIndex > 0) {
-      setStep(wizardSteps[stepIndex - 1]);
-    }
-  }, [stepIndex, setStep]);
+    previousStep();
+  }, [previousStep]);
 
   const handleFinish = useCallback(async () => {
     const campaign = {
