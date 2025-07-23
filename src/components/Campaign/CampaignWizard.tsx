@@ -1,22 +1,21 @@
 import React, { useState, useCallback } from 'react';
 import CampaignAudience from './CampaignAudience';
-import CampaignBudget, { CampaignBudgetValues } from './CampaignBudget';
+import CampaignBudget from './CampaignBudget';
 import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
 import CampaignObjective from './CampaignObjective';
 import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
+import useCampaignStore, { initialBudget } from '../../stores/useCampaignStore';
 
 interface WizardData {
   objective: string;
   audienceId: string;
-  budget: CampaignBudgetValues;
   creative: CampaignCreativeValues;
 }
 
 const initialData: WizardData = {
   objective: 'LINK_CLICKS',
   audienceId: '',
-  budget: { budgetType: 'daily', budgetAmount: 0, startDate: '', endDate: '' },
   creative: { files: [], message: '', link: '', page: '' },
 };
 
@@ -27,6 +26,7 @@ const CampaignWizard: React.FC = () => {
   const [step, setStep] = useState<Step>('objective');
   const [data, setData] = useState<WizardData>(initialData);
   const stepIndex = steps.indexOf(step);
+  const { budget, setBudget } = useCampaignStore();
 
   const handleObjectiveChange = useCallback((objective: string) => {
     setData(prev => ({ ...prev, objective }));
@@ -36,9 +36,6 @@ const CampaignWizard: React.FC = () => {
     setData(prev => ({ ...prev, audienceId }));
   }, []);
 
-  const handleBudgetChange = useCallback((budget: CampaignBudgetValues) => {
-    setData(prev => ({ ...prev, budget }));
-  }, []);
 
   const handleCreativeChange = useCallback((creative: CampaignCreativeValues) => {
     setData(prev => ({ ...prev, creative }));
@@ -61,18 +58,19 @@ const CampaignWizard: React.FC = () => {
       toast.info('Publicando campanha...');
       const campaignId = await createCampaign('Nova Campanha', data.objective);
       const adSetId = await createAdSet(campaignId, data.audienceId, {
-        type: data.budget.budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
-        value: data.budget.budgetAmount,
+        type: budget.budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
+        value: budget.budgetAmount,
       });
       await createAd(adSetId, data.creative.message, data.creative.files);
       toast.success('Campanha publicada com sucesso');
       setData(initialData);
+      setBudget(initialBudget);
       setStep('objective');
     } catch (err) {
       console.error(err);
       toast.error('Falha ao publicar campanha');
     }
-  }, [data]);
+  }, [budget, data, setBudget]);
 
   return (
     <div className="p-4 border rounded space-y-4">
@@ -89,15 +87,7 @@ const CampaignWizard: React.FC = () => {
           onChange={handleAudienceChange}
         />
       )}
-      {step === 'budget' && (
-        <CampaignBudget
-          budgetType={data.budget.budgetType}
-          budgetAmount={data.budget.budgetAmount}
-          startDate={data.budget.startDate}
-          endDate={data.budget.endDate}
-          onChange={handleBudgetChange}
-        />
-      )}
+      {step === 'budget' && <CampaignBudget {...budget} onChange={setBudget} />}
       {step === 'creative' && (
         <CampaignCreative
           files={data.creative.files}

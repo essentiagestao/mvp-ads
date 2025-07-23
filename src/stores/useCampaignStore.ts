@@ -1,11 +1,18 @@
 import { create } from 'zustand';
 
 export interface CampaignBudgetValues {
-  budgetType: 'daily' | 'total';
+  budgetType: 'daily' | 'lifetime';
   budgetAmount: number;
   startDate: string;
   endDate: string;
 }
+
+export const initialBudget: CampaignBudgetValues = {
+  budgetType: 'daily',
+  budgetAmount: 10,
+  startDate: '',
+  endDate: '',
+};
 
 interface CampaignState {
   budget: CampaignBudgetValues;
@@ -13,8 +20,8 @@ interface CampaignState {
 }
 
 export const useCampaignStore = create<CampaignState>(set => ({
-  budget: { budgetType: 'daily', budgetAmount: 10, startDate: '', endDate: '' },
-  setBudget: budget => set({ budget })
+  budget: initialBudget,
+  setBudget: budget => set({ budget }),
 }));
 
 export default useCampaignStore;
