@@ -1,22 +1,31 @@
 import React, { useState, useCallback } from 'react';
 import CampaignAudience from './CampaignAudience';
-import CampaignBudget, { CampaignBudgetValues } from './CampaignBudget';
+import CampaignBudget from './CampaignBudget';
 import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
 import CampaignObjective from './CampaignObjective';
 import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
+import useCampaignStore, {
+  CampaignBudgetValues,
+  selectBudgetAmount,
+  selectBudgetType,
+  selectStartDate,
+  selectEndDate,
+  selectSetBudgetAmount,
+  selectSetBudgetType,
+  selectSetStartDate,
+  selectSetEndDate,
+} from '../../stores/useCampaignStore';
 
 interface WizardData {
   objective: string;
   audienceId: string;
-  budget: CampaignBudgetValues;
   creative: CampaignCreativeValues;
 }
 
 const initialData: WizardData = {
   objective: 'LINK_CLICKS',
   audienceId: '',
-  budget: { budgetType: 'daily', budgetAmount: 0, startDate: '', endDate: '' },
   creative: { files: [], message: '', link: '', page: '' },
 };
 
@@ -27,6 +36,14 @@ const CampaignWizard: React.FC = () => {
   const [step, setStep] = useState<Step>('objective');
   const [data, setData] = useState<WizardData>(initialData);
   const stepIndex = steps.indexOf(step);
+  const budgetAmount = useCampaignStore(selectBudgetAmount);
+  const budgetType = useCampaignStore(selectBudgetType);
+  const startDate = useCampaignStore(selectStartDate);
+  const endDate = useCampaignStore(selectEndDate);
+  const setBudgetAmount = useCampaignStore(selectSetBudgetAmount);
+  const setBudgetType = useCampaignStore(selectSetBudgetType);
+  const setStartDate = useCampaignStore(selectSetStartDate);
+  const setEndDate = useCampaignStore(selectSetEndDate);
 
   const handleObjectiveChange = useCallback((objective: string) => {
     setData(prev => ({ ...prev, objective }));
@@ -36,13 +53,20 @@ const CampaignWizard: React.FC = () => {
     setData(prev => ({ ...prev, audienceId }));
   }, []);
 
-  const handleBudgetChange = useCallback((budget: CampaignBudgetValues) => {
-    setData(prev => ({ ...prev, budget }));
-  }, []);
 
   const handleCreativeChange = useCallback((creative: CampaignCreativeValues) => {
     setData(prev => ({ ...prev, creative }));
   }, []);
+
+  const handleBudgetChange = useCallback(
+    (values: CampaignBudgetValues) => {
+      setBudgetAmount(values.budgetAmount);
+      setBudgetType(values.budgetType);
+      setStartDate(values.startDate);
+      setEndDate(values.endDate);
+    },
+    [setBudgetAmount, setBudgetType, setStartDate, setEndDate]
+  );
 
   const handleNext = useCallback(() => {
     if (stepIndex < steps.length - 1) {
@@ -61,18 +85,19 @@ const CampaignWizard: React.FC = () => {
       toast.info('Publicando campanha...');
       const campaignId = await createCampaign('Nova Campanha', data.objective);
       const adSetId = await createAdSet(campaignId, data.audienceId, {
-        type: data.budget.budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
-        value: data.budget.budgetAmount,
+        type: budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
+        value: budgetAmount,
       });
       await createAd(adSetId, data.creative.message, data.creative.files);
       toast.success('Campanha publicada com sucesso');
       setData(initialData);
+      useCampaignStore.getState().reset();
       setStep('objective');
     } catch (err) {
       console.error(err);
       toast.error('Falha ao publicar campanha');
     }
-  }, [data]);
+  }, [budgetAmount, budgetType, data]);
 
   return (
     <div className="p-4 border rounded space-y-4">
@@ -91,10 +116,10 @@ const CampaignWizard: React.FC = () => {
       )}
       {step === 'budget' && (
         <CampaignBudget
-          budgetType={data.budget.budgetType}
-          budgetAmount={data.budget.budgetAmount}
-          startDate={data.budget.startDate}
-          endDate={data.budget.endDate}
+          budgetAmount={budgetAmount}
+          budgetType={budgetType}
+          startDate={startDate}
+          endDate={endDate}
           onChange={handleBudgetChange}
         />
       )}
