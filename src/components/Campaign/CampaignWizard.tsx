@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import CampaignAudience from './CampaignAudience';
 import CampaignBudget from './CampaignBudget';
 import CampaignCreative, { CampaignCreativeValues } from './CampaignCreative';
@@ -7,56 +7,67 @@ import { createCampaign, createAdSet, createAd } from '../mediaQueue';
 import { toast } from 'react-toastify';
 import useCampaignStore, {
   CampaignBudgetValues,
+  wizardSteps,
   selectBudgetAmount,
   selectBudgetType,
   selectStartDate,
   selectEndDate,
+  selectStep,
+  selectSetStep,
   selectSetBudgetAmount,
   selectSetBudgetType,
   selectSetStartDate,
   selectSetEndDate,
+  selectObjective,
+  selectAudienceId,
+  selectCreative,
+  selectSetObjective,
+  selectSetAudienceId,
+  selectSetCreative,
+  selectResetCampaign,
 } from '../../stores/useCampaignStore';
 
-interface WizardData {
-  objective: string;
-  audienceId: string;
-  creative: CampaignCreativeValues;
-}
-
-const initialData: WizardData = {
-  objective: 'LINK_CLICKS',
-  audienceId: '',
-  creative: { files: [], message: '', link: '', page: '' },
-};
-
-const steps = ['objective', 'audience', 'budget', 'creative'] as const;
-type Step = typeof steps[number];
-
 const CampaignWizard: React.FC = () => {
-  const [step, setStep] = useState<Step>('objective');
-  const [data, setData] = useState<WizardData>(initialData);
-  const stepIndex = steps.indexOf(step);
+  const step = useCampaignStore(selectStep);
+  const setStep = useCampaignStore(selectSetStep);
+  const stepIndex = wizardSteps.indexOf(step);
   const budgetAmount = useCampaignStore(selectBudgetAmount);
   const budgetType = useCampaignStore(selectBudgetType);
   const startDate = useCampaignStore(selectStartDate);
   const endDate = useCampaignStore(selectEndDate);
+  const objective = useCampaignStore(selectObjective);
+  const audienceId = useCampaignStore(selectAudienceId);
+  const creative = useCampaignStore(selectCreative);
   const setBudgetAmount = useCampaignStore(selectSetBudgetAmount);
   const setBudgetType = useCampaignStore(selectSetBudgetType);
   const setStartDate = useCampaignStore(selectSetStartDate);
   const setEndDate = useCampaignStore(selectSetEndDate);
+  const setObjective = useCampaignStore(selectSetObjective);
+  const setAudienceId = useCampaignStore(selectSetAudienceId);
+  const setCreative = useCampaignStore(selectSetCreative);
+  const resetCampaign = useCampaignStore(selectResetCampaign);
 
-  const handleObjectiveChange = useCallback((objective: string) => {
-    setData(prev => ({ ...prev, objective }));
-  }, []);
+  const handleObjectiveChange = useCallback(
+    (value: string) => {
+      setObjective(value);
+    },
+    [setObjective]
+  );
 
-  const handleAudienceChange = useCallback((audienceId: string) => {
-    setData(prev => ({ ...prev, audienceId }));
-  }, []);
+  const handleAudienceChange = useCallback(
+    (value: string) => {
+      setAudienceId(value);
+    },
+    [setAudienceId]
+  );
 
 
-  const handleCreativeChange = useCallback((creative: CampaignCreativeValues) => {
-    setData(prev => ({ ...prev, creative }));
-  }, []);
+  const handleCreativeChange = useCallback(
+    (value: CampaignCreativeValues) => {
+      setCreative(value);
+    },
+    [setCreative]
+  );
 
   const handleBudgetChange = useCallback(
     (values: CampaignBudgetValues) => {
@@ -69,50 +80,42 @@ const CampaignWizard: React.FC = () => {
   );
 
   const handleNext = useCallback(() => {
-    if (stepIndex < steps.length - 1) {
-      setStep(steps[stepIndex + 1]);
+    if (stepIndex < wizardSteps.length - 1) {
+      setStep(wizardSteps[stepIndex + 1]);
     }
-  }, [stepIndex]);
+  }, [stepIndex, setStep]);
 
   const handleBack = useCallback(() => {
     if (stepIndex > 0) {
-      setStep(steps[stepIndex - 1]);
+      setStep(wizardSteps[stepIndex - 1]);
     }
-  }, [stepIndex]);
+  }, [stepIndex, setStep]);
 
   const handleFinish = useCallback(async () => {
     try {
       toast.info('Publicando campanha...');
-      const campaignId = await createCampaign('Nova Campanha', data.objective);
-      const adSetId = await createAdSet(campaignId, data.audienceId, {
+      const campaignId = await createCampaign('Nova Campanha', objective);
+      const adSetId = await createAdSet(campaignId, audienceId, {
         type: budgetType === 'daily' ? 'DAILY' : 'LIFETIME',
         value: budgetAmount,
       });
-      await createAd(adSetId, data.creative.message, data.creative.files);
+      await createAd(adSetId, creative.message, creative.files);
       toast.success('Campanha publicada com sucesso');
-      setData(initialData);
-      useCampaignStore.getState().reset();
-      setStep('objective');
+      resetCampaign();
     } catch (err) {
       console.error(err);
       toast.error('Falha ao publicar campanha');
     }
-  }, [budgetAmount, budgetType, data]);
+  }, [budgetAmount, budgetType, objective, audienceId, creative, resetCampaign]);
 
   return (
     <div className="p-4 border rounded space-y-4">
       <h2 className="text-lg font-bold">Campaign Wizard</h2>
       {step === 'objective' && (
-        <CampaignObjective
-          objective={data.objective}
-          onChange={handleObjectiveChange}
-        />
+        <CampaignObjective objective={objective} onChange={handleObjectiveChange} />
       )}
       {step === 'audience' && (
-        <CampaignAudience
-          audienceId={data.audienceId}
-          onChange={handleAudienceChange}
-        />
+        <CampaignAudience audienceId={audienceId} onChange={handleAudienceChange} />
       )}
       {step === 'budget' && (
         <CampaignBudget
@@ -125,10 +128,10 @@ const CampaignWizard: React.FC = () => {
       )}
       {step === 'creative' && (
         <CampaignCreative
-          files={data.creative.files}
-          message={data.creative.message}
-          link={data.creative.link}
-          page={data.creative.page}
+          files={creative.files}
+          message={creative.message}
+          link={creative.link}
+          page={creative.page}
           onChange={handleCreativeChange}
         />
       )}
@@ -141,7 +144,7 @@ const CampaignWizard: React.FC = () => {
             Voltar
           </button>
         )}
-        {stepIndex < steps.length - 1 && (
+        {stepIndex < wizardSteps.length - 1 && (
           <button
             onClick={handleNext}
             className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
@@ -149,7 +152,7 @@ const CampaignWizard: React.FC = () => {
             Próximo
           </button>
         )}
-        {stepIndex === steps.length - 1 && (
+        {stepIndex === wizardSteps.length - 1 && (
           <button
             onClick={handleFinish}
             className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
