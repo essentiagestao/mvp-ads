@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useCampaignStore from '../stores/useCampaignStore';
 import { createCampaign } from '../services/campaign';
 
@@ -9,11 +9,22 @@ const StepPreview: React.FC = () => {
   const endDate = useCampaignStore((s) => s.endDate);
   const audienceId = useCampaignStore((s) => s.audienceId);
   const goBack = useCampaignStore((s) => s.goBack);
+  const resetCampaign = useCampaignStore((s) => s.resetCampaign);
+  const [created, setCreated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleConfirm = async () => {
+    setLoading(true);
     const campaign = { budgetType, budgetAmount, startDate, endDate, audienceId };
-    await createCampaign(campaign);
-    console.log(campaign);
+    const success = await createCampaign(campaign);
+    setLoading(false);
+    if (success) {
+      setCreated(true);
+    }
+  };
+
+  const handleNewCampaign = () => {
+    resetCampaign();
   };
 
   return (
@@ -33,13 +44,24 @@ const StepPreview: React.FC = () => {
         >
           Voltar
         </button>
-        <button
-          onClick={handleConfirm}
-          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-        >
-          Confirmar e Criar Campanha
-        </button>
+        {!created ? (
+          <button
+            onClick={handleConfirm}
+            disabled={loading}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            Confirmar e Criar Campanha
+          </button>
+        ) : (
+          <button
+            onClick={handleNewCampaign}
+            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+          >
+            Criar nova campanha
+          </button>
+        )}
       </div>
+      {created && <p>Campanha criada com sucesso!</p>}
     </div>
   );
 };

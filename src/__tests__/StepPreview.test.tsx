@@ -23,7 +23,7 @@ describe('StepPreview', () => {
 
     const createCampaignSpy = vi
       .spyOn(campaignService, 'createCampaign')
-      .mockResolvedValue();
+      .mockResolvedValue(true);
 
     render(<StepPreview />);
 
@@ -49,5 +49,14 @@ describe('StepPreview', () => {
         audienceId: 'aud1',
       });
     });
+
+    expect(
+      await screen.findByText(/Campanha criada com sucesso!/i)
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Criar nova campanha/i }));
+
+    expect(useCampaignStore.getState().stepIndex).toBe(0);
+    expect(useCampaignStore.getState().audienceId).toBe('');
   });
 });
