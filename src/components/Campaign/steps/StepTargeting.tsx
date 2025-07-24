@@ -22,14 +22,14 @@ const StepTargeting: React.FC = () => {
         {stepIndex > 0 && (
           <button
             onClick={goBack}
-            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+            className="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
           >
             Voltar
           </button>
         )}
         <button
           onClick={goNext}
-          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          className="px-4 py-2 rounded border bg-blue-600 text-white hover:bg-blue-700"
         >
           Próximo
         </button>

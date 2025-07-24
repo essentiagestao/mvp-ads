@@ -15,7 +15,7 @@ describe('StepScheduling', () => {
     render(<StepScheduling />);
 
     const startInput = screen.getByLabelText(/Data de início/i);
-    const endInput = screen.getByLabelText(/Data de término/i);
+    const endInput = screen.getByLabelText(/Quando a campanha termina\?/i);
 
     fireEvent.change(startInput, { target: { value: '2023-01-02' } });
     fireEvent.change(endInput, { target: { value: '2023-01-01' } });

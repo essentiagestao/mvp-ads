@@ -40,6 +40,7 @@ export const initialBudget: CampaignBudgetValues = {
 };
 
 export interface CampaignValues extends CampaignBudgetValues {
+  name: string;
   objective: string;
   audienceId: string;
   creative: CampaignCreativeValues;
@@ -50,6 +51,7 @@ export interface CampaignValues extends CampaignBudgetValues {
 
 export const initialCampaign: CampaignValues = {
   ...initialBudget,
+  name: '',
   objective: '',
   audienceId: '',
   creative: { files: [], message: '', link: '', page: '' },
@@ -72,6 +74,7 @@ export interface CampaignState extends CampaignValues {
   setEndDate: (endDate: string) => void;
   setObjective: (objective: string) => void;
   setAudienceId: (audienceId: string) => void;
+  setName: (name: string) => void;
   setCreative: (creative: CampaignCreativeValues) => void;
   setTargeting: (targeting: CampaignTargeting | null) => void;
   setPlacements: (placements: string[]) => void;
@@ -110,6 +113,7 @@ export const useCampaignStore = create<CampaignState>()(
         setStartDate: startDate => set({ startDate }),
         setEndDate: endDate => set({ endDate }),
         setObjective: objective => set({ objective }),
+        setName: name => set({ name }),
         setAudienceId: audienceId => set({ audienceId }),
         setCreative: creative => set({ creative }),
         setTargeting: targeting => set({ targeting }),
@@ -150,6 +154,7 @@ export const selectStartDate = (state: CampaignState) => state.startDate;
 export const selectEndDate = (state: CampaignState) => state.endDate;
 export const selectObjective = (state: CampaignState) => state.objective;
 export const selectAudienceId = (state: CampaignState) => state.audienceId;
+export const selectName = (state: CampaignState) => state.name;
 export const selectCreative = (state: CampaignState) => state.creative;
 export const selectTargeting = (state: CampaignState) => state.targeting;
 export const selectPlacements = (state: CampaignState) => state.placements;
@@ -168,6 +173,7 @@ export const selectSetStartDate = (state: CampaignState) => state.setStartDate;
 export const selectSetEndDate = (state: CampaignState) => state.setEndDate;
 export const selectSetObjective = (state: CampaignState) => state.setObjective;
 export const selectSetAudienceId = (state: CampaignState) => state.setAudienceId;
+export const selectSetName = (state: CampaignState) => state.setName;
 export const selectSetCreative = (state: CampaignState) => state.setCreative;
 export const selectSetTargeting = (state: CampaignState) => state.setTargeting;
 export const selectSetPlacements = (state: CampaignState) => state.setPlacements;

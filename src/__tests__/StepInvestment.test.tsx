@@ -18,7 +18,7 @@ describe('StepInvestment', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/maior que zero/i);
     expect(goNextSpy).not.toHaveBeenCalled();
 
-    fireEvent.change(screen.getByLabelText(/Valor do orçamento/i), {
+    fireEvent.change(screen.getByLabelText(/Quanto você quer investir\?/i), {
       target: { value: '25' },
     });
     fireEvent.click(screen.getByLabelText(/Orçamento total/i));
