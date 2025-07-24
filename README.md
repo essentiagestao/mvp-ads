@@ -31,6 +31,13 @@ Plataforma de Ads
    ```bash
    npm run build
    ```
+   O diretório `dist/` será gerado com os arquivos estáticos. Para revisar o
+   resultado localmente execute:
+   ```bash
+   npm run preview
+   ```
+   Em provedores como o Vercel defina o comando de build como `npm run build`
+   e sirva o diretório `dist`.
 
 O projeto utiliza o Vite com `index.html` na raiz do repositório como ponto de entrada.
 Os módulos que interagem com a API da Meta foram movidos para `backend-meta/` e

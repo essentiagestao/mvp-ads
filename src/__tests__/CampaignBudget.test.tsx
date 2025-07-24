@@ -26,7 +26,7 @@ describe('CampaignBudget', () => {
 
     // --- Ação 1: Mudar valor ---
     await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Valor do orçamento/i), {
+      fireEvent.change(screen.getByLabelText(/Quanto você quer investir\?/i), {
         target: { value: '20' },
       });
     });
@@ -43,7 +43,7 @@ describe('CampaignBudget', () => {
 
     // --- Ação 2.2: Inserir data de término inválida ---
     await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Data de término/i), {
+      fireEvent.change(screen.getByLabelText(/Quando a campanha termina\?/i), {
         target: { value: '2023-01-01' },
       });
     });
@@ -54,7 +54,7 @@ describe('CampaignBudget', () => {
 
     // --- Ação 3: Corrigir data ---
     await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Data de término/i), {
+      fireEvent.change(screen.getByLabelText(/Quando a campanha termina\?/i), {
         target: { value: '2023-01-03' },
       });
     });

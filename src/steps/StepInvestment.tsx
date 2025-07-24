@@ -47,7 +47,7 @@ const StepInvestment: React.FC = () => {
       </div>
       <div>
         <label className="block mb-1 font-medium" htmlFor="budgetAmount">
-          Valor do orçamento
+          Quanto você quer investir?
         </label>
         <input
           id="budgetAmount"
@@ -56,7 +56,7 @@ const StepInvestment: React.FC = () => {
           value={budgetAmount}
           onChange={(e) => setBudgetAmount(Number(e.target.value))}
           className="border rounded px-2 py-1"
-          aria-label="Valor do orçamento"
+          aria-label="Quanto você quer investir?"
         />
       </div>
       {error && (
@@ -68,14 +68,14 @@ const StepInvestment: React.FC = () => {
         {stepIndex > 0 && (
           <button
             onClick={goBack}
-            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+            className="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
           >
             Voltar
           </button>
         )}
         <button
           onClick={handleNext}
-          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          className="px-4 py-2 rounded border bg-blue-600 text-white hover:bg-blue-700"
         >
           Próximo
         </button>

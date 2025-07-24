@@ -4,11 +4,15 @@ export interface CampaignPreview {
   startDate: string;
   endDate: string;
   audienceId: string;
+  name: string;
 }
 
 export async function createCampaign(
   campaign: CampaignPreview
 ): Promise<boolean> {
   await new Promise(resolve => setTimeout(resolve, 500));
+  if (campaign.name === 'erro') {
+    return false;
+  }
   return true;
 }

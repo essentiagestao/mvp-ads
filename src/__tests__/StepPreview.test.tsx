@@ -47,6 +47,7 @@ describe('StepPreview', () => {
         startDate: '2023-01-01',
         endDate: '2023-01-02',
         audienceId: 'aud1',
+        name: '',
       });
     });
 

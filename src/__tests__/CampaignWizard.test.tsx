@@ -23,13 +23,13 @@ describe('CampaignWizard', () => {
   it('steps through wizard and publishes campaign', async () => {
     render(<CampaignWizard />);
 
-    const amountInput = screen.getByLabelText(/Valor do orçamento/i);
+    const amountInput = screen.getByLabelText(/Quanto você quer investir\?/i);
     fireEvent.change(amountInput, { target: { value: '50' } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
     const startInput = await screen.findByLabelText(/Data de início/i);
     fireEvent.change(startInput, { target: { value: '2023-01-02' } });
-    fireEvent.change(screen.getByLabelText(/Data de término/i), {
+    fireEvent.change(screen.getByLabelText(/Quando a campanha termina\?/i), {
       target: { value: '2023-01-03' },
     });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
@@ -55,6 +55,7 @@ describe('CampaignWizard', () => {
         startDate: '2023-01-02',
         endDate: '2023-01-03',
         audienceId: 'aud-1',
+        name: '',
       });
     });
   });

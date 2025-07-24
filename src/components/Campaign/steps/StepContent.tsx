@@ -3,7 +3,9 @@ import useCampaignStore, { CampaignCreativeValues } from '../../../stores/useCam
 
 const StepContent: React.FC = () => {
   const creative = useCampaignStore((s) => s.creative);
+  const name = useCampaignStore((s) => s.name);
   const setCreative = useCampaignStore((s) => s.setCreative);
+  const setName = useCampaignStore((s) => s.setName);
   const goNext = useCampaignStore((s) => s.goNext);
   const goBack = useCampaignStore((s) => s.goBack);
   const stepIndex = useCampaignStore((s) => s.stepIndex);
@@ -20,6 +22,19 @@ const StepContent: React.FC = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-bold">Mídia e Conteúdo</h2>
+      <div>
+        <label className="block mb-1 font-medium" htmlFor="campaignName">
+          Nome da campanha
+        </label>
+        <input
+          id="campaignName"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border rounded px-2 py-1 w-full"
+          aria-label="Nome da campanha"
+        />
+      </div>
       <input type="file" multiple onChange={onFilesChange} />
       <textarea
         value={creative.message}
@@ -30,18 +45,18 @@ const StepContent: React.FC = () => {
       <div className="flex space-x-2">
         {stepIndex > 0 && (
           <button
-            onClick={goBack}
-            className="px-4 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
-          >
-            Voltar
-          </button>
-        )}
-        <button
-          onClick={goNext}
-          className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          onClick={goBack}
+          className="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
         >
-          Próximo
+          Voltar
         </button>
+      )}
+      <button
+        onClick={goNext}
+        className="px-4 py-2 rounded border bg-blue-600 text-white hover:bg-blue-700"
+      >
+        Próximo
+      </button>
       </div>
     </div>
   );

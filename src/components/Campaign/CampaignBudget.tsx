@@ -56,7 +56,7 @@ const CampaignBudget: React.FC<CampaignBudgetProps> = ({
       </div>
       <div>
         <label className="block mb-1 font-medium" htmlFor="budgetAmount">
-          Valor do orçamento
+          Quanto você quer investir?
         </label>
         <input
           id="budgetAmount"
@@ -83,7 +83,7 @@ const CampaignBudget: React.FC<CampaignBudgetProps> = ({
         </div>
         <div className="flex-1">
           <label className="block mb-1 font-medium" htmlFor="endDate">
-            Data de término
+            Quando a campanha termina?
           </label>
           <input
             id="endDate"
