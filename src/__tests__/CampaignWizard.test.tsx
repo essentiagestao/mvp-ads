@@ -29,6 +29,13 @@ describe('CampaignWizard', () => {
     fireEvent.change(amountInput, { target: { value: '50' } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
+    const startInput = await screen.findByLabelText(/Data de início/i);
+    fireEvent.change(startInput, { target: { value: '2023-01-02' } });
+    fireEvent.change(screen.getByLabelText(/Data de término/i), {
+      target: { value: '2023-01-03' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
+
     const audienceInput = await screen.findByLabelText(/Audience ID/i);
     fireEvent.change(audienceInput, { target: { value: 'aud-1' } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));

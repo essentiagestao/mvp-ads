@@ -1,11 +1,12 @@
 import React from 'react';
 import useCampaignStore from '../../stores/useCampaignStore';
 import StepBudget from './steps/StepBudget';
+import StepScheduling from './steps/StepScheduling';
 import StepTargeting from './steps/StepTargeting';
 import StepContent from './steps/StepContent';
 import StepReview from './steps/StepReview';
 
-const steps = [StepBudget, StepTargeting, StepContent, StepReview];
+const steps = [StepBudget, StepScheduling, StepTargeting, StepContent, StepReview];
 
 const CampaignWizard: React.FC = () => {
   const stepIndex = useCampaignStore((s) => s.stepIndex);

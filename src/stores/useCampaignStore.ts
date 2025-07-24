@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const wizardSteps = [
   'budget',
+  'scheduling',
   'targeting',
   'content',
   'review',
@@ -75,6 +76,8 @@ export interface CampaignState extends CampaignValues {
   setTargeting: (targeting: CampaignTargeting | null) => void;
   setPlacements: (placements: string[]) => void;
   setMedia: (media: File[]) => void;
+  updateCampaign: (values: Partial<CampaignValues>) => void;
+  setDates: (dates: { startDate: string; endDate: string }) => void;
   reset: () => void;
   resetCampaign: () => void;
 }
@@ -112,6 +115,8 @@ export const useCampaignStore = create<CampaignState>()(
         setTargeting: targeting => set({ targeting }),
         setPlacements: placements => set({ placements }),
         setMedia: media => set({ media }),
+        updateCampaign: values => set({ ...values }),
+        setDates: dates => set({ ...dates }),
         setStep,
         nextStep: next,
         previousStep: previous,
@@ -167,6 +172,8 @@ export const selectSetCreative = (state: CampaignState) => state.setCreative;
 export const selectSetTargeting = (state: CampaignState) => state.setTargeting;
 export const selectSetPlacements = (state: CampaignState) => state.setPlacements;
 export const selectSetMedia = (state: CampaignState) => state.setMedia;
+export const selectUpdateCampaign = (state: CampaignState) => state.updateCampaign;
+export const selectSetDates = (state: CampaignState) => state.setDates;
 export const selectSetStep = (state: CampaignState) => state.setStep;
 export const selectReset = (state: CampaignState) => state.reset;
 export const selectResetCampaign = (state: CampaignState) => state.resetCampaign;
