@@ -6,7 +6,7 @@ export const wizardSteps = [
   'scheduling',
   'targeting',
   'content',
-  'review',
+  'preview',
 ] as const;
 export type WizardStep = typeof wizardSteps[number];
 
