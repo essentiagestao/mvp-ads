@@ -6,7 +6,9 @@ export interface CampaignPreview {
   audienceId: string;
 }
 
-export async function createCampaign(campaign: CampaignPreview): Promise<void> {
-  console.log('Criando campanha', campaign);
-  return Promise.resolve();
+export async function createCampaign(
+  campaign: CampaignPreview
+): Promise<boolean> {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return true;
 }
