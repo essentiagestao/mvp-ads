@@ -2,14 +2,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CampaignWizard from '../components/Campaign/CampaignWizard';
 import { vi, beforeEach } from 'vitest';
 import useCampaignStore from '../stores/useCampaignStore';
-import { createCampaign, createAdSet, createAd } from '../components/mediaQueue';
+import { createCampaign } from '../services/campaign';
 
 defineGlobals();
 
-vi.mock('../components/mediaQueue', () => ({
-  createCampaign: vi.fn(() => Promise.resolve('camp')),
-  createAdSet: vi.fn(() => Promise.resolve('adset')),
-  createAd: vi.fn(() => Promise.resolve('ad')),
+vi.mock('../services/campaign', () => ({
+  createCampaign: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock('react-toastify', () => ({
@@ -45,13 +43,19 @@ describe('CampaignWizard', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
-    expect(await screen.findByText(/Resumo Final/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Finalizar/i }));
+    expect(await screen.findByText(/Revise sua campanha/i)).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole('button', { name: /Confirmar e Criar Campanha/i })
+    );
 
     await waitFor(() => {
-      expect(createCampaign).toHaveBeenCalledWith('Nova Campanha', '');
-      expect(createAdSet).toHaveBeenCalled();
-      expect(createAd).toHaveBeenCalled();
+      expect(createCampaign).toHaveBeenCalledWith({
+        budgetType: 'daily',
+        budgetAmount: 50,
+        startDate: '2023-01-02',
+        endDate: '2023-01-03',
+        audienceId: 'aud-1',
+      });
     });
   });
 });

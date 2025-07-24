@@ -4,14 +4,14 @@ import StepInvestment from '../../steps/StepInvestment';
 import StepScheduling from './steps/StepScheduling';
 import StepTargeting from './steps/StepTargeting';
 import StepContent from './steps/StepContent';
-import StepReview from './steps/StepReview';
+import StepPreview from '../../steps/StepPreview';
 
 const steps = [
   StepInvestment,
   StepScheduling,
   StepTargeting,
   StepContent,
-  StepReview,
+  StepPreview,
 ];
 
 const CampaignWizard: React.FC = () => {
