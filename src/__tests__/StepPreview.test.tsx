@@ -17,6 +17,8 @@ describe('StepPreview', () => {
       state.setBudgetAmount(100);
       state.setStartDate('2023-01-01');
       state.setEndDate('2023-01-02');
+      state.setObjective('LINK_CLICKS');
+      state.setPlacements(['Feed']);
       state.setAudience({
         name: 'aud1',
         location: 'sp',
@@ -61,6 +63,8 @@ describe('StepPreview', () => {
           ageMax: 30,
           useSaved: false,
         },
+        objective: 'LINK_CLICKS',
+        placements: ['Feed'],
         name: '',
       });
     });

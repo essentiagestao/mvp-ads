@@ -8,6 +8,8 @@ const StepPreview: React.FC = () => {
   const startDate = useCampaignStore((s) => s.startDate);
   const endDate = useCampaignStore((s) => s.endDate);
   const audience = useCampaignStore((s) => s.audience);
+  const objective = useCampaignStore((s) => s.objective);
+  const placements = useCampaignStore((s) => s.placements);
   const name = useCampaignStore((s) => s.name);
   const goBack = useCampaignStore((s) => s.goBack);
   const setStep = useCampaignStore((s) => s.setStep);
@@ -18,7 +20,16 @@ const StepPreview: React.FC = () => {
 
   const handleConfirm = async () => {
     setLoading(true);
-    const campaign = { budgetType, budgetAmount, startDate, endDate, audience, name };
+    const campaign = {
+      budgetType,
+      budgetAmount,
+      startDate,
+      endDate,
+      audience,
+      objective,
+      placements,
+      name,
+    };
     const success = await createCampaign(campaign as any);
     setLoading(false);
     if (success) {
@@ -36,6 +47,10 @@ const StepPreview: React.FC = () => {
     <div className="space-y-6 max-w-[720px] mx-auto px-4">
       <h2 className="text-lg font-bold">Revise sua campanha</h2>
       <div className="space-y-4">
+        <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Objetivo</h3>
+          <p>{objective}</p>
+        </div>
         <div className="border rounded p-4">
           <h3 className="font-semibold mb-2">Investimento</h3>
           <p>Tipo: {budgetType === 'daily' ? 'Diário' : 'Total'}</p>
@@ -57,13 +72,17 @@ const StepPreview: React.FC = () => {
           <p>Término: {endDate}</p>
         </div>
         <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Posicionamentos</h3>
+          <p>{placements.join(', ')}</p>
+        </div>
+        <div className="border rounded p-4">
           <h3 className="font-semibold mb-2">Conteúdo</h3>
           <p>{name}</p>
         </div>
       </div>
       <div className="flex space-x-2">
         <button
-          onClick={() => setStep('budget')}
+          onClick={() => setStep('objective')}
           className="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
         >
           Editar campanha
