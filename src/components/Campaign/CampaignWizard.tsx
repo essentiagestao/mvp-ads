@@ -1,15 +1,19 @@
 import React from 'react';
 import useCampaignStore from '../../stores/useCampaignStore';
+import StepObjective from './steps/StepObjective';
 import StepInvestment from '../../steps/StepInvestment';
 import StepScheduling from './steps/StepScheduling';
 import StepTargeting from './steps/StepTargeting';
+import StepPlacements from './steps/StepPlacements';
 import StepContent from './steps/StepContent';
 import StepPreview from '../../steps/StepPreview';
 
 const steps = [
+  StepObjective,
   StepInvestment,
   StepScheduling,
   StepTargeting,
+  StepPlacements,
   StepContent,
   StepPreview,
 ];

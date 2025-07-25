@@ -23,7 +23,11 @@ describe('CampaignWizard', () => {
   it('steps through wizard and publishes campaign', async () => {
     render(<CampaignWizard />);
 
-    const amountInput = screen.getByLabelText(/Quanto você quer investir\?/i);
+    const objectiveOption = screen.getByLabelText(/Cliques no Link/i);
+    fireEvent.click(objectiveOption);
+    fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
+
+    const amountInput = await screen.findByLabelText(/Quanto você quer investir\?/i);
     fireEvent.change(amountInput, { target: { value: '50' } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
@@ -54,6 +58,10 @@ describe('CampaignWizard', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
+    await screen.findByText(/Posicionamentos/);
+    fireEvent.click(screen.getByLabelText(/Feed/));
+    fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
+
     fireEvent.change(await screen.findByLabelText(/Texto principal do anúncio/i), {
       target: { value: 'Hello' },
     });
@@ -78,6 +86,8 @@ describe('CampaignWizard', () => {
           ageMax: 30,
           useSaved: false,
         },
+        objective: 'LINK_CLICKS',
+        placements: ['Feed'],
         name: '',
       });
     });

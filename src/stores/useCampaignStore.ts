@@ -2,9 +2,11 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const wizardSteps = [
+  'objective',
   'budget',
   'scheduling',
   'targeting',
+  'placements',
   'content',
   'preview',
 ] as const;
@@ -39,7 +41,7 @@ export interface CampaignBudgetValues {
   endDate: string;
 }
 
-export const initialStep: WizardStep = 'budget';
+export const initialStep: WizardStep = 'objective';
 
 export const initialBudget: CampaignBudgetValues = {
   budgetType: 'daily',
