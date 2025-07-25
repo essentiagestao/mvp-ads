@@ -19,6 +19,15 @@ export interface CampaignCreativeValues {
   page: string;
 }
 
+export interface AudienceValues {
+  name: string;
+  location: string;
+  interests: string;
+  ageMin: number;
+  ageMax: number;
+  useSaved: boolean;
+}
+
 export interface CampaignTargeting {
   [key: string]: unknown;
 }
@@ -43,6 +52,7 @@ export interface CampaignValues extends CampaignBudgetValues {
   name: string;
   objective: string;
   audienceId: string;
+  audience: AudienceValues;
   creative: CampaignCreativeValues;
   targeting: CampaignTargeting | null;
   placements: string[];
@@ -54,6 +64,14 @@ export const initialCampaign: CampaignValues = {
   name: '',
   objective: '',
   audienceId: '',
+  audience: {
+    name: '',
+    location: '',
+    interests: '',
+    ageMin: 18,
+    ageMax: 65,
+    useSaved: false,
+  },
   creative: { files: [], message: '', link: '', page: '' },
   targeting: null,
   placements: [],
@@ -74,6 +92,7 @@ export interface CampaignState extends CampaignValues {
   setEndDate: (endDate: string) => void;
   setObjective: (objective: string) => void;
   setAudienceId: (audienceId: string) => void;
+  setAudience: (audience: AudienceValues) => void;
   setName: (name: string) => void;
   setCreative: (creative: CampaignCreativeValues) => void;
   setTargeting: (targeting: CampaignTargeting | null) => void;
@@ -115,6 +134,7 @@ export const useCampaignStore = create<CampaignState>()(
         setObjective: objective => set({ objective }),
         setName: name => set({ name }),
         setAudienceId: audienceId => set({ audienceId }),
+        setAudience: audience => set({ audience }),
         setCreative: creative => set({ creative }),
         setTargeting: targeting => set({ targeting }),
         setPlacements: placements => set({ placements }),
@@ -154,6 +174,7 @@ export const selectStartDate = (state: CampaignState) => state.startDate;
 export const selectEndDate = (state: CampaignState) => state.endDate;
 export const selectObjective = (state: CampaignState) => state.objective;
 export const selectAudienceId = (state: CampaignState) => state.audienceId;
+export const selectAudience = (state: CampaignState) => state.audience;
 export const selectName = (state: CampaignState) => state.name;
 export const selectCreative = (state: CampaignState) => state.creative;
 export const selectTargeting = (state: CampaignState) => state.targeting;
@@ -173,6 +194,7 @@ export const selectSetStartDate = (state: CampaignState) => state.setStartDate;
 export const selectSetEndDate = (state: CampaignState) => state.setEndDate;
 export const selectSetObjective = (state: CampaignState) => state.setObjective;
 export const selectSetAudienceId = (state: CampaignState) => state.setAudienceId;
+export const selectSetAudience = (state: CampaignState) => state.setAudience;
 export const selectSetName = (state: CampaignState) => state.setName;
 export const selectSetCreative = (state: CampaignState) => state.setCreative;
 export const selectSetTargeting = (state: CampaignState) => state.setTargeting;

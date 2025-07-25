@@ -12,7 +12,17 @@ const StepScheduling: React.FC = () => {
   const stepIndex = useCampaignStore((s) => s.stepIndex);
   const [error, setError] = useState('');
 
+  const today = new Date().toISOString().split('T')[0];
+
   const handleNext = () => {
+    if (startDate && startDate < today) {
+      setError('A data de início não pode ser anterior a hoje.');
+      return;
+    }
+    if (endDate && endDate < today) {
+      setError('A data de término não pode ser anterior a hoje.');
+      return;
+    }
     if (startDate && endDate && endDate < startDate) {
       setError('A data de término não pode ser anterior à data de início.');
       return;
@@ -23,10 +33,11 @@ const StepScheduling: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 max-w-[720px] mx-auto px-4">
       <h2 className="text-lg font-bold">Agendamento</h2>
       <input
         type="date"
+        min={today}
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
         className="border rounded px-2 py-1"
@@ -34,6 +45,7 @@ const StepScheduling: React.FC = () => {
       />
       <input
         type="date"
+        min={today}
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
         className="border rounded px-2 py-1"

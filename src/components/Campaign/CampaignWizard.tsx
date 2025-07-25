@@ -19,7 +19,7 @@ const CampaignWizard: React.FC = () => {
   const Current = steps[stepIndex] ?? StepInvestment;
   const totalSteps = steps.length;
   return (
-    <div className="p-4 border rounded space-y-4">
+    <div className="p-4 border rounded space-y-4 max-w-[720px] mx-auto">
       <div className="text-sm text-gray-600">Passo {stepIndex + 1} de {totalSteps}</div>
       <Current />
     </div>
