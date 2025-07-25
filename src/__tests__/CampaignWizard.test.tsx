@@ -28,17 +28,33 @@ describe('CampaignWizard', () => {
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
     const startInput = await screen.findByLabelText(/Data de início/i);
-    fireEvent.change(startInput, { target: { value: '2023-01-02' } });
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    fireEvent.change(startInput, { target: { value: today } });
     fireEvent.change(screen.getByLabelText(/Quando a campanha termina\?/i), {
-      target: { value: '2023-01-03' },
+      target: { value: tomorrow },
     });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
-    const audienceInput = await screen.findByLabelText(/Audience ID/i);
-    fireEvent.change(audienceInput, { target: { value: 'aud-1' } });
+    await screen.findByLabelText(/Nome do Público/i);
+    fireEvent.change(screen.getByLabelText(/Nome do Público/i), {
+      target: { value: 'aud-1' },
+    });
+    fireEvent.change(screen.getByLabelText(/Localização/i), {
+      target: { value: 'sp' },
+    });
+    fireEvent.change(screen.getByLabelText(/Interesses/i), {
+      target: { value: 'tech' },
+    });
+    fireEvent.change(screen.getByLabelText(/Idade mínima/i), {
+      target: { value: '18' },
+    });
+    fireEvent.change(screen.getByLabelText(/Idade máxima/i), {
+      target: { value: '30' },
+    });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
-    fireEvent.change(await screen.findByLabelText(/Mensagem/i), {
+    fireEvent.change(await screen.findByLabelText(/Texto principal do anúncio/i), {
       target: { value: 'Hello' },
     });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
@@ -52,9 +68,16 @@ describe('CampaignWizard', () => {
       expect(createCampaign).toHaveBeenCalledWith({
         budgetType: 'daily',
         budgetAmount: 50,
-        startDate: '2023-01-02',
-        endDate: '2023-01-03',
-        audienceId: 'aud-1',
+        startDate: today,
+        endDate: tomorrow,
+        audience: {
+          name: 'aud-1',
+          location: 'sp',
+          interests: 'tech',
+          ageMin: 18,
+          ageMax: 30,
+          useSaved: false,
+        },
         name: '',
       });
     });

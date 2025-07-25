@@ -17,8 +17,10 @@ describe('StepScheduling', () => {
     const startInput = screen.getByLabelText(/Data de início/i);
     const endInput = screen.getByLabelText(/Quando a campanha termina\?/i);
 
-    fireEvent.change(startInput, { target: { value: '2023-01-02' } });
-    fireEvent.change(endInput, { target: { value: '2023-01-01' } });
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    fireEvent.change(startInput, { target: { value: tomorrow } });
+    fireEvent.change(endInput, { target: { value: today } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
     expect(screen.getByRole('alert')).toHaveTextContent(
@@ -26,13 +28,14 @@ describe('StepScheduling', () => {
     );
     expect(goNextSpy).not.toHaveBeenCalled();
 
-    fireEvent.change(endInput, { target: { value: '2023-01-03' } });
+    const dayAfter = new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0];
+    fireEvent.change(endInput, { target: { value: dayAfter } });
     fireEvent.click(screen.getByRole('button', { name: /Próximo/i }));
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(updateSpy).toHaveBeenLastCalledWith({
-      startDate: '2023-01-02',
-      endDate: '2023-01-03',
+      startDate: tomorrow,
+      endDate: dayAfter,
     });
     expect(goNextSpy).toHaveBeenCalled();
   });

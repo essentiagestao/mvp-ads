@@ -3,7 +3,7 @@ export interface CampaignPreview {
   budgetAmount: number;
   startDate: string;
   endDate: string;
-  audienceId: string;
+  audience: unknown;
   name: string;
 }
 

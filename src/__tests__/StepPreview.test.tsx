@@ -17,7 +17,14 @@ describe('StepPreview', () => {
       state.setBudgetAmount(100);
       state.setStartDate('2023-01-01');
       state.setEndDate('2023-01-02');
-      state.setAudienceId('aud1');
+      state.setAudience({
+        name: 'aud1',
+        location: 'sp',
+        interests: 'tech',
+        ageMin: 18,
+        ageMax: 30,
+        useSaved: false,
+      });
       state.setStep('preview');
     });
 
@@ -33,8 +40,8 @@ describe('StepPreview', () => {
     expect(screen.getByText(/2023-01-02/)).toBeInTheDocument();
     expect(screen.getByText(/aud1/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Voltar/i }));
-    expect(useCampaignStore.getState().stepIndex).toBe(3);
+    fireEvent.click(screen.getByRole('button', { name: /Editar campanha/i }));
+    expect(useCampaignStore.getState().stepIndex).toBe(0);
 
     fireEvent.click(
       screen.getByRole('button', { name: /Confirmar e Criar Campanha/i })
@@ -46,7 +53,14 @@ describe('StepPreview', () => {
         budgetAmount: 100,
         startDate: '2023-01-01',
         endDate: '2023-01-02',
-        audienceId: 'aud1',
+        audience: {
+          name: 'aud1',
+          location: 'sp',
+          interests: 'tech',
+          ageMin: 18,
+          ageMax: 30,
+          useSaved: false,
+        },
         name: '',
       });
     });

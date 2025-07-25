@@ -7,9 +7,10 @@ const StepPreview: React.FC = () => {
   const budgetAmount = useCampaignStore((s) => s.budgetAmount);
   const startDate = useCampaignStore((s) => s.startDate);
   const endDate = useCampaignStore((s) => s.endDate);
-  const audienceId = useCampaignStore((s) => s.audienceId);
+  const audience = useCampaignStore((s) => s.audience);
   const name = useCampaignStore((s) => s.name);
   const goBack = useCampaignStore((s) => s.goBack);
+  const setStep = useCampaignStore((s) => s.setStep);
   const resetCampaign = useCampaignStore((s) => s.resetCampaign);
   const [created, setCreated] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,8 +18,8 @@ const StepPreview: React.FC = () => {
 
   const handleConfirm = async () => {
     setLoading(true);
-    const campaign = { budgetType, budgetAmount, startDate, endDate, audienceId, name };
-    const success = await createCampaign(campaign);
+    const campaign = { budgetType, budgetAmount, startDate, endDate, audience, name };
+    const success = await createCampaign(campaign as any);
     setLoading(false);
     if (success) {
       setCreated(true);
@@ -32,22 +33,40 @@ const StepPreview: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 max-w-[720px] mx-auto px-4">
       <h2 className="text-lg font-bold">Revise sua campanha</h2>
-      <ul className="space-y-1">
-        <li>Nome: {name}</li>
-        <li>Tipo de orçamento: {budgetType === 'daily' ? 'Diário' : 'Total'}</li>
-        <li>Investimento: {budgetAmount}</li>
-        <li>Data de início: {startDate}</li>
-        <li>Data de término: {endDate}</li>
-        <li>ID de público: {audienceId}</li>
-      </ul>
+      <div className="space-y-4">
+        <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Investimento</h3>
+          <p>Tipo: {budgetType === 'daily' ? 'Diário' : 'Total'}</p>
+          <p>Valor: R$ {budgetAmount}</p>
+        </div>
+        <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Público</h3>
+          <p>Nome: {audience.name}</p>
+          <p>Localização: {audience.location}</p>
+          <p>Interesses: {audience.interests}</p>
+          <p>
+            Idade: {audience.ageMin} - {audience.ageMax}
+          </p>
+          <p>Usar salvo: {audience.useSaved ? 'Sim' : 'Não'}</p>
+        </div>
+        <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Datas</h3>
+          <p>Início: {startDate}</p>
+          <p>Término: {endDate}</p>
+        </div>
+        <div className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Conteúdo</h3>
+          <p>{name}</p>
+        </div>
+      </div>
       <div className="flex space-x-2">
         <button
-          onClick={goBack}
+          onClick={() => setStep('budget')}
           className="px-4 py-2 rounded border bg-gray-100 hover:bg-gray-200"
         >
-          Voltar
+          Editar campanha
         </button>
         {!created ? (
           <button
